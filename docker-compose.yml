@@ -1,4 +1,28 @@
 services:
+  mta-server:
+    build: .
+    develop:
+        watch:
+            - action: sync+restart
+              path: .
+              target: /opt/mta/mods/deathmatch/resources/[gamemodes]/phantomplay
+              ignore:
+                - meta.xml
+                - mta-server.conf
+                - Dockerfile
+            - action: rebuild
+              path: meta.xml
+            - action: rebuild
+              path: mta-server.conf
+    container_name: mta_server
+    ports:
+      - "22003:22003/udp"
+      - "22126:22126"
+    depends_on:
+      - db
+    networks:
+      - db_network
+
   db:
     image: mariadb:latest
     container_name: mariadb_container
