@@ -47,8 +47,6 @@ RUN mkdir -p mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay && 
 
 COPY . mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay
 
-RUN tree mods/deathmatch/resources/[gamemodes]/
-
 RUN chown -R mtauser:mtauser mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay && \
     chmod -R 777 mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay
 

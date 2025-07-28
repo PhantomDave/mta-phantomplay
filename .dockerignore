@@ -1,0 +1,56 @@
+# Ignore Lua compiled files
+luac.out
+
+# Ignore build artifacts
+*.vscode
+*.idea
+*.src.rock
+*.zip
+*.tar.gz
+*.o
+*.os
+*.ko
+*.obj
+*.elf
+*.gch
+*.pch
+*.lib
+*.a
+*.la
+*.lo
+*.def
+*.exp
+*.dll
+*.so
+*.so.*
+*.dylib
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore configuration files not needed in image
+mta-server-install.sh
+README.md
+
+# Ignore version control
+.git
+.gitignore
+
+# Ignore editor/project files
+.vscode/
+
+# Ignore database data
+/db_data
+
+# Ignore Docker Compose override files
+docker-compose.override.yml
+
+# Ignore other temp files
+*.tmp

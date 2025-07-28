@@ -1,5 +1,5 @@
 function initializeAccountDatabase()
-    local result = query("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), last_login VARCHAR(16))")
+    local result = query("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), last_login VARCHAR(16) DEFAULT current_timestamp())")
     if result then
         outputDebugString("[DEBUG] Account table creation query executed successfully.")
         --triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
@@ -17,7 +17,7 @@ function loginUser(email, password)
     end
     local queryString = string.format("SELECT * FROM accounts WHERE email = '%s' AND password = '%s'", email, sha256(email .. password))
     local result = query(queryString)
-    return result
+    return result[1] or nil
 end
 
 function GetUserByEmail(email)

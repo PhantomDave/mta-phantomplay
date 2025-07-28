@@ -3,6 +3,7 @@ function createLoginWindow()
 	local Y = 0.375
 	local Width = 0.25
 	local Height = 0.25
+
 	wdwLogin = guiCreateWindow(X, Y, Width, Height, "Please Log In", true)
 	
 	X = 0.0825
@@ -29,10 +30,10 @@ function createLoginWindow()
 	Y = 0.7
 	Width = 0.25
 	Height = 0.2
-	btnLogin = guiCreateButton(X, Y, Width, Height, "Log In", true, wdwLogin)
+	local btnLogin = guiCreateButton(X, Y, Width, Height, "Log In", true, wdwLogin)
 	local btnRegister = guiCreateButton(X + 0.3, Y, Width, Height, "Register", true, wdwLogin)
-	addEventHandler("onClientGUIClick", btnLogin, clientSubmitLogin, false)	
-	addEventHandler("onClientGUIClick", btnRegister, clientSubmitRegister, false)	
+	addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnLogin, clientSubmitLogin, false)	
+	addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnRegister, clientSubmitRegister, false)	
 	guiSetVisible(wdwLogin, false)
 end
 
@@ -42,7 +43,7 @@ function clientSubmitRegister(button,state)
 		local password = guiGetText(edtPass)
 		outputDebugString("Register button clicked with username: " .. username .. " and password: " .. password)
 		if username and username ~= "" and password and password ~= "" then
-			triggerServerEvent("submitRegister", localPlayer, username, password)
+			triggerServerEvent(EVENTS.ACCOUNTS.REGISTER_ACCOUNT, localPlayer, username, password)
 			outputChatBox("Attempting to register with username: " .. username)
 		else
 			outputChatBox("Please enter a username and password.")
@@ -58,7 +59,7 @@ function clientSubmitLogin(button,state)
 		outputDebugString("Login button clicked with username: " .. username .. " and password: " .. password)
 		
 		if username and username ~= "" and password and password ~= "" then
-			triggerServerEvent("submitLogin", localPlayer, username, password)
+			triggerServerEvent(EVENTS.ACCOUNTS.LOGIN_ACCOUNT, localPlayer, username, password)
 			outputChatBox("Attempting to log in with username: " .. username)
 		else
 			outputChatBox("Please enter a username and password.")
@@ -80,10 +81,11 @@ addEventHandler("onClientResourceStart", getResourceRootElement(),
 	end
 )
 
-addEvent("clearLoginWindow",true)
-addEventHandler("clearLoginWindow", localPlayer,
-	function ()
+addEvent(EVENTS.GUI.CLEAR_LOGIN_WINDOW,true)
+addEventHandler(EVENTS.GUI.CLEAR_LOGIN_WINDOW, localPlayer,
+	function (account)
 		outputChatBox("You have successfully logged in. The login window will now close.")
+		setAccountData(account)
 		if (wdwLogin ~= nil) then
 			guiSetVisible(wdwLogin, false)
 			showCursor(false)
