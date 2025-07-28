@@ -14,11 +14,36 @@ function createCharacterSelectionWindow()
 
     local btnCreate = guiCreateButton(0.05, 0.85, 0.4, 0.1, "Create Character", true, wdwCharSelection)
     local btnSelect = guiCreateButton(0.55, 0.85, 0.4, 0.1, "Select Character", true, wdwCharSelection)
+
+    addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnCreate, OnCreateCharacter, false)
+    addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnSelect, OnSelectCharacter, false)
+end
+
+function OnCreateCharacter(button, state)
+    if button == "left" and state == "up" then
+        -- Trigger the client event to open the character creation window
+        triggerEvent(EVENTS.CHARACTERS.OPEN_CHARACTER_CREATION, localPlayer)
+        guiSetVisible(wdwCharSelection, false)
+    end
+end
+
+function OnSelectCharacter(button, state)
+    if button == "left" and state == "up" then
+        local selectedRow = guiGridListGetSelectedItem(gridListCharacters)
+        if selectedRow ~= -1 then
+            local characterName = guiGridListGetItemText(gridListCharacters, selectedRow, 1)
+            outputChatBox("You have selected character: " .. characterName)
+            -- Here you would typically trigger a server event to handle the character selection
+            triggerServerEvent(EVENTS.CHARACTERS.ON_CHARACTER_SELECTED, localPlayer, characterName)
+        else
+            outputChatBox("Please select a character first.")
+        end
+    end
 end
 
 
-addEvent("openCharacterSelection",true)
-addEventHandler("openCharacterSelection", root, 
+addEvent(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION,true)
+addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, root, 
     function (characters)
         if not wdwCharSelection then
             createCharacterSelectionWindow()
@@ -39,11 +64,4 @@ addEventHandler("openCharacterSelection", root,
         showCursor(true)
         guiSetInputEnabled(true)
     end
-)
-
-addEventHandler("onClientResourceStart", getResourceRootElement(), 
-	function ()
-		createCharacterSelectionWindow()
-        guiSetVisible(wdwCharSelection, false)
-	end
 )

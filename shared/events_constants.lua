@@ -8,5 +8,18 @@ EVENTS = {
     },
     ACCOUNTS = {
         ON_ACCOUNT_DATABASE_CONNECTED = "onAccountDatabaseConnected",
+        LOGIN_ACCOUNT = "loginAccount",
+        REGISTER_ACCOUNT = "registerAccount",
+    },
+    CHARACTERS = {
+        ON_CHARACTER_DATABASE_CONNECTED = "onCharacterDatabaseConnected",
+        ON_CHARACTER_SELECTED = "onCharacterSelected",
+        ON_CHARACTER_CREATED = "onCharacterCreated",
+        ON_CHARACTER_DELETED = "onCharacterDeleted",
+        OPEN_CHARACTER_SELECTION = "openCharacterSelection",
+        OPEN_CHARACTER_CREATION = "openCharacterCreation",
+    },
+    GUI = {
+        ON_GUI_CLICK = "onClientGUIClick",
     }
 }
