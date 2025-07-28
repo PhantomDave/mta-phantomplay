@@ -1,5 +1,5 @@
 function connect ()
-    DBConnection = dbConnect("mysql", "dbname=mta_sa;host=127.0.0.1;charset=utf8", "my_user", "user_password", "share=1" )
+    DBConnection = dbConnect("mysql", "dbname=mta_sa;host=db;charset=utf8", "my_user", "user_password", "share=1" )
 
     if (not DBConnection) then
         outputDebugString("Error: Failed to establish connection to the MySQL database server")
