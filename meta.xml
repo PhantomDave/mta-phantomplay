@@ -1,8 +1,9 @@
 <meta>
 	<info author="PhantomDave" description="" version="2.0" type="gamemode"/>
 	
-	<script src="shared/events_constants.lua" type="shared"/>
 	<script src="utils.lua" type="shared"/>
+	<script src="main.lua" type="server"/>
+	<script src="shared/events_constants.lua" type="shared"/>
 	<script src="database/database_init.lua" type="server"/>
 	<script src="[house]/main_house.lua" type="server"/>
 	<script src="[house]/commands/admin_commands.lua" type="server"/>
@@ -12,5 +13,5 @@
 	<script src="[account]/[server]/events/register_events.lua" type="server"/>
 	<!-- Client -->
 	<script src="[account]/client/login.lua" type="client"/>
-
+	
 </meta>

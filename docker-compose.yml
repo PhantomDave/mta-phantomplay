@@ -6,6 +6,10 @@ services:
             - action: sync+restart
               path: .
               target: /opt/mta/mods/deathmatch/resources/[gamemodes]/phantomplay
+              ignore:
+                - meta.xml
+                - mta-server.conf
+                - Dockerfile
             - action: rebuild
               path: meta.xml
             - action: rebuild
