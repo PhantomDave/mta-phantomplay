@@ -81,8 +81,8 @@ addEventHandler("onClientResourceStart", getResourceRootElement(),
 	end
 )
 
-addEvent("clearLoginWindow",true)
-addEventHandler("clearLoginWindow", localPlayer,
+addEvent(EVENTS.GUI.CLEAR_LOGIN_WINDOW,true)
+addEventHandler(EVENTS.GUI.CLEAR_LOGIN_WINDOW, localPlayer,
 	function (account)
 		outputChatBox("You have successfully logged in. The login window will now close.")
 		setAccountData(account)

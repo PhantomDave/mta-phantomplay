@@ -8,7 +8,7 @@ function loginHandler(username,password)
 		fadeCamera(client, true)
 		setCameraTarget(client, client)
 		outputChatBox("Welcome to My Server.", client)
-		triggerClientEvent("clearLoginWindow", client, account)
+		triggerClientEvent(client, EVENTS.GUI.CLEAR_LOGIN_WINDOW, client, account)
 		triggerClientEvent(client, EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, client, GetCharactersByAccountId(account.id))
 	else
 		-- if the username or password are not correct, output a message to the player

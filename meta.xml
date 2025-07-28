@@ -15,9 +15,10 @@
 	<script src="[characters]/[server]/events.lua" type="server"/>
 
 	<!-- Client -->
-	<script src="[account]/[client]/gui/login.lua" type="client"/>
-	<script src="[account]/[client]/gui/character_selector.lua" type="client"/>
-	<script src="[account]/[client]/gui/character_creator.lua" type="client"/>
 	<script src="[account]/[client]/main.lua" type="client"/>
+	<script src="[account]/[client]/gui/login.lua" type="client"/>
+	<script src="[characters]/[client]/main.lua" type="client"/>
+	<script src="[characters]/[client]/gui/character_selector.lua" type="client"/>
+	<script src="[characters]/[client]/gui/character_creator.lua" type="client"/>
 
 </meta>

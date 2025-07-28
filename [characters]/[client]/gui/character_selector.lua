@@ -34,7 +34,8 @@ function OnSelectCharacter(button, state)
             local characterName = guiGridListGetItemText(gridListCharacters, selectedRow, 1)
             outputChatBox("You have selected character: " .. characterName)
             -- Here you would typically trigger a server event to handle the character selection
-            triggerServerEvent(EVENTS.CHARACTERS.ON_CHARACTER_SELECTED, localPlayer, characterName)
+            triggerServerEvent(EVENTS.CHARACTERS.ON_CHARACTER_SELECTED, localPlayer, Characters[selectedRow+1].id)
+            setCharacterData(Characters[selectedRow+1])
         else
             outputChatBox("Please select a character first.")
         end
@@ -42,16 +43,17 @@ function OnSelectCharacter(button, state)
 end
 
 
-addEvent(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION,true)
-addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, root, 
+addEvent(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, true)
+addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, localPlayer, 
     function (characters)
         if not wdwCharSelection then
             createCharacterSelectionWindow()
         end
 
         guiGridListClear(gridListCharacters)
-
+        
         if characters and isTableNotEmpty(characters) then
+            Characters = characters or {}
             for _, char in ipairs(characters) do
                 local row = guiGridListAddRow(gridListCharacters)
                 guiGridListSetItemText(gridListCharacters, row, 1, char.name, false, false)
@@ -63,5 +65,16 @@ addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, root,
         guiSetVisible(wdwCharSelection, true)
         showCursor(true)
         guiSetInputEnabled(true)
+    end
+)
+
+addEvent(EVENTS.GUI.CLEAR_CHARACTER_SELECTION_WINDOW, true)
+addEventHandler(EVENTS.GUI.CLEAR_CHARACTER_SELECTION_WINDOW, localPlayer,
+    function ()
+        if wdwCharSelection then
+            guiSetVisible(wdwCharSelection, false)
+            showCursor(false)
+            guiSetInputEnabled(false)
+        end
     end
 )

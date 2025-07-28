@@ -55,13 +55,26 @@ function CreateCharacter(button, state)
     end
 end
 
-addEvent(EVENTS.CHARACTERS.OPEN_CHARACTER_CREATION, false)
-addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_CREATION, localPlayer, 
+local result = addEvent(EVENTS.CHARACTERS.OPEN_CHARACTER_CREATION, true)
+
+addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_CREATION, root, 
     function ()
         if not wdwCharCreation then
             createCharacterCreationWindow()
         end
 
         guiSetVisible(wdwCharCreation, true)
+    end
+)
+
+addEvent(EVENTS.CHARACTERS.ON_CHARACTER_CREATION_COMPLETED, true)
+addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_CREATION_COMPLETED, localPlayer,
+    function (characterData)
+        outputChatBox("Character created successfully:")
+        outputChatBox("Name: " .. characterData.name)
+        outputChatBox("Age: " .. characterData.age)
+        outputChatBox("Gender: " .. characterData.gender)
+        outputChatBox("Skin ID: " .. characterData.skin)
+        guiSetVisible(wdwCharCreation, false)
     end
 )

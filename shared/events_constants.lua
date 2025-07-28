@@ -18,8 +18,11 @@ EVENTS = {
         ON_CHARACTER_DELETED = "onCharacterDeleted",
         OPEN_CHARACTER_SELECTION = "openCharacterSelection",
         OPEN_CHARACTER_CREATION = "openCharacterCreation",
+        ON_CHARACTER_CREATION_COMPLETED = "onCharacterCreationCompleted",
     },
     GUI = {
         ON_GUI_CLICK = "onClientGUIClick",
+        CLEAR_LOGIN_WINDOW = "clearLoginWindow",
+        CLEAR_CHARACTER_SELECTION_WINDOW = "clearCharacterSelectionWindow",
     }
 }
