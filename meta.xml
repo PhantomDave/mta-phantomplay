@@ -11,7 +11,10 @@
 	<script src="[account]/[server]/database.lua" type="server"/>
 	<script src="[account]/[server]/events/login_events.lua" type="server"/>
 	<script src="[account]/[server]/events/register_events.lua" type="server"/>
+	<script src="[characters]/[server]/database.lua" type="server"/>
+
 	<!-- Client -->
-	<script src="[account]/client/login.lua" type="client"/>
-	
+	<script src="[account]/[client]/gui/login.lua" type="client"/>
+	<script src="[account]/[client]/gui/character_selector.lua" type="client"/>
+
 </meta>

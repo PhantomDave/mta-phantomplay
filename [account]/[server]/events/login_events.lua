@@ -9,11 +9,12 @@ function loginHandler(username,password)
 		setCameraTarget(client, client)
 		outputChatBox("Welcome to My Server.", client)
 		triggerClientEvent("clearLoginWindow", client)
+		triggerClientEvent(client, "openCharacterSelection", client, GetCharactersByAccountId(account.id))
 	else
 		-- if the username or password are not correct, output a message to the player
 		outputChatBox("Invalid username and password. Please re-connect and try again.", client)
 	end			
 end
 
-addEvent("submitLogin",true)
-addEventHandler("submitLogin",root,loginHandler)
+addEvent("submitLogin", true)
+addEventHandler("submitLogin", root, loginHandler)
