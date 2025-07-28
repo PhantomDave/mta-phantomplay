@@ -1,4 +1,15 @@
 services:
+  mta-server:
+    build: .
+    container_name: mta_server
+    ports:
+      - "22003:22003/udp"
+      - "22126:22126"
+    depends_on:
+      - db
+    networks:
+      - db_network
+
   db:
     image: mariadb:latest
     container_name: mariadb_container
