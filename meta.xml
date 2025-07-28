@@ -10,7 +10,6 @@
 	<script src="[account]/[server]/database.lua" type="server"/>
 	<script src="[account]/[server]/events/login_events.lua" type="server"/>
 	<script src="[account]/[server]/events/register_events.lua" type="server"/>
-
 	<!-- Client -->
 	<script src="[account]/client/login.lua" type="client"/>
 

@@ -1,12 +1,15 @@
 services:
   mta-server:
     build: .
-#    command: npm start
     develop:
         watch:
             - action: sync+restart
               path: .
               target: /opt/mta/mods/deathmatch/resources/[gamemodes]/phantomplay
+            - action: rebuild
+              path: meta.xml
+            - action: rebuild
+              path: mta-server.conf
     container_name: mta_server
     ports:
       - "22003:22003/udp"
