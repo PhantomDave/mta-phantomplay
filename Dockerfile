@@ -53,10 +53,12 @@ COPY --chown=mtauser:mtauser acl.xml mods/deathmatch/acl.xml
 RUN chmod 777 mods/deathmatch/mtaserver.conf
 
 # Copy application code LAST (changes most frequently, minimal cache invalidation)
-COPY --chown=mtauser:mtauser . mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay
+COPY --chown=mtauser:mtauser ./phantomplay mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay
+COPY --chown=mtauser:mtauser ./guieditor mods/deathmatch/resources/[gamemodes]/[guieditor]/guieditor
 
 # Set final permissions for application code
 RUN chmod -R 777 mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay
+RUN chmod -R 777 mods/deathmatch/resources/[gamemodes]/[guieditor]/guieditor
 
 # Switch to non-root user
 USER mtauser
