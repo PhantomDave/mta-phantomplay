@@ -71,7 +71,7 @@ function addHouseToRadar(house)
     end)
     
     table.insert(houses, house)
-    outputDebugString("[DEBUG] House created (ID: " .. tostring(insertId) .. ") at (" .. x .. ", " .. y .. ", " .. z .. ") for $" .. price .. ".")
+    outputDebugString("[DEBUG] House created (ID: " .. tostring(house.id) .. ") at (" .. house.x .. ", " .. house.y .. ", " .. house.z .. ") for $" .. house.price .. ".")
     outputDebugString("[DEBUG] Total houses in radar: " .. #houses)
 
 end

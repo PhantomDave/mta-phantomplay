@@ -16,8 +16,9 @@ function GetCharacterById(characterId)
         return nil
     end
     local queryString = string.format("SELECT * FROM characters WHERE id = %d", characterId)
-    local result = query(queryString)
-    return result and result[1] or nil
+    local result = queryAsync(queryString, function(result)
+        return result and result[1] or nil
+    end)
 end
 
 function GetCharactersByAccountId(accountId)
@@ -26,8 +27,9 @@ function GetCharactersByAccountId(accountId)
         return nil
     end
     local queryString = string.format("SELECT * FROM characters WHERE account_id = %d", accountId)
-    local result = query(queryString)
-    return isTableNotEmpty(result) and result or nil
+    local result = queryAsync(queryString, function(result)
+        return isTableNotEmpty(result) and result or nil
+    end)
 end
 
 function CreateCharacter(name, age, gender, skin, accountId)
@@ -36,6 +38,8 @@ function CreateCharacter(name, age, gender, skin, accountId)
         return false
     end
     local queryString = string.format("INSERT INTO characters (name, age, gender, skin, account_id) VALUES ('%s', %d, '%s', '%s', %d)", name, age, gender, skin, accountId)
-    local result = query(queryString)
+    local result = insertAsync(queryString, function(result)
+        return result and result[1] or nil
+    end)
     return result
 end

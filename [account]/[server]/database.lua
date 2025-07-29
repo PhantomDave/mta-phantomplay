@@ -16,8 +16,13 @@ function loginUser(email, password)
         return nil
     end
     local queryString = string.format("SELECT * FROM accounts WHERE email = '%s' AND password = '%s'", email, sha256(email .. password))
-    local result = query(queryString)
-    return result[1] or nil
+    local result = queryAsync(queryString, function(result)
+        if not result or #result == 0 then
+            outputDebugString("[DEBUG] Login failed for user: " .. email)
+            return nil
+        end
+        return result[1] or nil
+    end)
 end
 
 function GetUserByEmail(email)
@@ -26,8 +31,9 @@ function GetUserByEmail(email)
         return nil
     end
     local queryString = string.format("SELECT * FROM accounts WHERE email = '%s'", email)
-    local result = query(queryString)
-    return result and result[1] or nil
+    local result = queryAsync(queryString, function(result)
+        return result and result[1] or nil
+    end)
 end
 
 function RegisterUser(email, password)
@@ -37,12 +43,13 @@ function RegisterUser(email, password)
     end
     local hashedPassword = sha256(email .. password)
     local queryString = string.format("INSERT INTO accounts (email, password) VALUES ('%s', '%s')", email, hashedPassword)
-    local result = execute(queryString)
-    if result > 0 then
-        outputDebugString("[DEBUG] User registered successfully: " .. email)
-        return true
-    else
-        outputDebugString("[DEBUG] User registration failed for: " .. email)
-        return false
-    end
+    local result = insertAsync(queryString, function(result)
+        if result > 0 then
+            outputDebugString("[DEBUG] User registered successfully: " .. email)
+            return true
+        else
+            outputDebugString("[DEBUG] User registration failed for: " .. email)
+            return false
+        end
+    end)
 end
