@@ -36,7 +36,6 @@ logs/
 *.log
 
 # Ignore configuration files not needed in image
-mta-server-install.sh
 README.md
 
 # Ignore version control

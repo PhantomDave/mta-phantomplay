@@ -14,7 +14,6 @@ getArchitecture()
         ARCH_TYPE="_x64"
     fi
 }
-INSTALL_DIR="${INSTALL_DIR:-multitheftauto_linux${ARCH_TYPE}}"
  
 downloadFiles()
 {
@@ -30,9 +29,9 @@ unpack()
  
 moveConfig()
 {
-    mv baseconfig/* "$INSTALL_DIR/mods/deathmatch"
+    mv baseconfig/* multitheftauto_linux${ARCH_TYPE}/mods/deathmatch
     rm -rf baseconfig
-    cd "$INSTALL_DIR"
+    cd multitheftauto_linux${ARCH_TYPE}
 }
  
 installResources()
