@@ -33,21 +33,14 @@ function createLoginWindow()
 	local btnLogin = guiCreateButton(X, Y, Width, Height, "Log In", true, wdwLogin)
 	local btnRegister = guiCreateButton(X + 0.3, Y, Width, Height, "Register", true, wdwLogin)
 	addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnLogin, clientSubmitLogin, false)	
-	addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnRegister, clientSubmitRegister, false)	
+	addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnRegister, clientRegisterWindow, false)	
 	guiSetVisible(wdwLogin, false)
 end
 
-function clientSubmitRegister(button,state)
+function clientRegisterWindow(button,state)
 	if button == "left" and state == "up" then
-		local username = guiGetText(edtUser)
-		local password = guiGetText(edtPass)
-		outputDebugString("Register button clicked with username: " .. username .. " and password: " .. password)
-		if username and username ~= "" and password and password ~= "" then
-			triggerServerEvent(EVENTS.ACCOUNTS.REGISTER_ACCOUNT, localPlayer, username, password)
-			outputChatBox("Attempting to register with username: " .. username)
-		else
-			outputChatBox("Please enter a username and password.")
-		end
+		toggleRegisterWindow()
+		guiSetVisible(wdwLogin, false)
 	end
 end
 

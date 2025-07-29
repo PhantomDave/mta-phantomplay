@@ -39,6 +39,7 @@ function executeAsync(queryStr, callback, ...)
     dbQuery(function(qh)
         local _, numRows = dbPoll(qh, -1)
         callback(numRows)
+        dbFree(qh)
     end, {}, DBConnection, queryStr, ...)
 end
 
@@ -52,6 +53,8 @@ function insertAsync(queryStr, callback, ...)
                 insertId = res2[1].id or res2[1]["LAST_INSERT_ID()"]
             end
             callback(insertId, numRows)
+            dbFree(qh2)
         end, {}, DBConnection, "SELECT LAST_INSERT_ID() AS id")
+        dbFree(qh)
     end, {}, DBConnection, queryStr, ...)
 end

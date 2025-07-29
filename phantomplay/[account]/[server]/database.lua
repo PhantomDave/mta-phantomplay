@@ -1,5 +1,5 @@
 function initializeAccountDatabase()
-    local result = query("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), last_login DATETIME DEFAULT current_timestamp())")
+    local result = query("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), last_login DATETIME DEFAULT current_timestamp())")
     if result then
         outputDebugString("[DEBUG] Account table creation query executed successfully.")
         --triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
@@ -28,24 +28,25 @@ function loginUser(email, password, callback)
     end)
 end
 
-function GetUserByEmail(email)
-    if not email then
-        outputDebugString("[DEBUG] GetUserByEmail called with nil email.")
-        return nil
+function GetUserByEmailOrUsername(email, username, callback)
+    if not email and not username then
+        outputDebugString("[DEBUG] GetUserByEmailOrUsername called with nil email and username.")
+        if callback then callback(nil) end
+        return
     end
-    local queryString = string.format("SELECT * FROM accounts WHERE email = '%s'", email)
+    local queryString = string.format("SELECT * FROM accounts WHERE email = '%s' OR username = '%s'", email, username)
     local result = queryAsync(queryString, function(result)
-        return result and result[1] or nil
+        if callback then callback(result and result[1] or nil) end
     end)
 end
 
-function RegisterUser(email, password)
-    if not email or not password then
-        outputDebugString("[DEBUG] RegisterUser called with nil email or password.")
+function RegisterUser(username, email, password)
+    if not email or not username or not password then
+        outputDebugString("[DEBUG] RegisterUser called with nil email, username or password.")
         return false
     end
     local hashedPassword = sha256(email .. password)
-    local queryString = string.format("INSERT INTO accounts (email, password) VALUES ('%s', '%s')", email, hashedPassword)
+    local queryString = string.format("INSERT INTO accounts (email, username, password) VALUES ('%s', '%s', '%s')", email, username, hashedPassword)
     insertAsync(queryString, function(result)
         if result > 0 then
             outputDebugString("[DEBUG] User registered successfully: " .. email)
