@@ -34,10 +34,11 @@ function getHouseById(callback, houseId)
     end, houseId)
 end
 
-function createHouse(x, y, z, price)
+function createHouse(x, y, z, price, callback)
     if not x or not y or not z or not price or tonumber(price) <= 0 then
         outputDebugString("[DEBUG] Invalid parameters for creating house.")
-        return false
+        if callback then callback(false) end
+        return
     end
     outputDebugString("[DEBUG] Attempting to create house at (" .. x .. ", " .. y .. ", " .. z .. ") with price $" .. price .. ".")
     local query = string.format("INSERT INTO houses (x,y,z, price) VALUES (%f, %f, %f, %d)", x, y, z, tonumber(price))
@@ -45,8 +46,10 @@ function createHouse(x, y, z, price)
     insertAsync(query, function(insertId, rowsAffected)
         if rowsAffected and rowsAffected > 0 then
             addHouseToRadar({ id = insertId, x = x, y = y, z = z, price = price })
+            if callback then callback(true) end
         else
             outputDebugString("[DEBUG] Failed to create house at (" .. x .. ", " .. y .. ", " .. z .. ").")
+            if callback then callback(false) end
         end
     end)
 end
