@@ -31,13 +31,15 @@ luac.out
 *.x86_64
 *.hex
 
-# Ignore logs
+# Ignore logs and temporary files
 logs/
 *.log
+*.tmp
 
-# Ignore configuration files not needed in image
-mta-server-install.sh
+# Ignore documentation (not needed at runtime)
 README.md
+COPILOT_INSTRUCTIONS.md
+*.md
 
 # Ignore version control
 .git
@@ -45,12 +47,30 @@ README.md
 
 # Ignore editor/project files
 .vscode/
+.idea/
 
 # Ignore database data
 /db_data
 
-# Ignore Docker Compose override files
+# Ignore Docker-related files (except Dockerfile itself)
+docker-compose.yml
 docker-compose.override.yml
+.dockerignore
 
-# Ignore other temp files
-*.tmp
+# Ignore development and test files that don't need to be in the container
+test/
+tests/
+*.test.lua
+*.spec.lua
+
+# Ignore backup and swap files
+*~
+*.swp
+*.swo
+*.bak
+*.backup
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+*.pid

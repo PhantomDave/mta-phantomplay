@@ -1,48 +1,84 @@
 function initializeAccountDatabase()
-    local result = query("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), last_login VARCHAR(16) DEFAULT current_timestamp())")
-    if result then
-        outputDebugString("[DEBUG] Account table creation query executed successfully.")
-        --triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
-    else
-        outputDebugString("[DEBUG] Account table creation query failed.")
-    end
+    executeAsync(
+        function(affectedRows, error)
+            if error then
+                outputDebugString("[DEBUG] Account table creation query failed: " .. tostring(error))
+            else
+                outputDebugString("[DEBUG] Account table creation query executed successfully.")
+            end
+        end,
+        nil,
+        "CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), password VARCHAR(255), last_login VARCHAR(16) DEFAULT current_timestamp())"
+    )
 end
 
 addEventHandler(EVENTS.ON_DATABASE_CONNECTED, root, initializeAccountDatabase)
 
-function loginUser(email, password)
+function loginUser(email, password, callback)
     if not email or not password then
         outputDebugString("[DEBUG] loginUser called with nil email or password.")
-        return nil
+        if callback then callback(nil) end
+        return
     end
-    local queryString = string.format("SELECT * FROM accounts WHERE email = '%s' AND password = '%s'", email, sha256(email .. password))
-    local result = query(queryString)
-    return result[1] or nil
+    
+    queryAsync(
+        function(result, numRows, error)
+            if error or not result or #result == 0 then
+                outputDebugString("[DEBUG] Login failed for email: " .. email)
+                if callback then callback(nil) end
+            else
+                if callback then callback(result[1]) end
+            end
+        end,
+        nil,
+        "SELECT * FROM accounts WHERE email = ? AND password = ?",
+        email,
+        sha256(email .. password)
+    )
 end
 
-function GetUserByEmail(email)
+function GetUserByEmail(email, callback)
     if not email then
         outputDebugString("[DEBUG] GetUserByEmail called with nil email.")
-        return nil
+        if callback then callback(nil) end
+        return
     end
-    local queryString = string.format("SELECT * FROM accounts WHERE email = '%s'", email)
-    local result = query(queryString)
-    return result and result[1] or nil
+    
+    queryAsync(
+        function(result, numRows, error)
+            if error or not result or #result == 0 then
+                if callback then callback(nil) end
+            else
+                if callback then callback(result[1]) end
+            end
+        end,
+        nil,
+        "SELECT * FROM accounts WHERE email = ?",
+        email
+    )
 end
 
-function RegisterUser(email, password)
+function RegisterUser(email, password, callback)
     if not email or not password then
         outputDebugString("[DEBUG] RegisterUser called with nil email or password.")
-        return false
+        if callback then callback(false) end
+        return
     end
+    
     local hashedPassword = sha256(email .. password)
-    local queryString = string.format("INSERT INTO accounts (email, password) VALUES ('%s', '%s')", email, hashedPassword)
-    local result = execute(queryString)
-    if result > 0 then
-        outputDebugString("[DEBUG] User registered successfully: " .. email)
-        return true
-    else
-        outputDebugString("[DEBUG] User registration failed for: " .. email)
-        return false
-    end
+    executeAsync(
+        function(affectedRows, error)
+            if error then
+                outputDebugString("[DEBUG] User registration failed for: " .. email .. " - " .. tostring(error))
+                if callback then callback(false) end
+            else
+                outputDebugString("[DEBUG] User registered successfully: " .. email)
+                if callback then callback(true) end
+            end
+        end,
+        nil,
+        "INSERT INTO accounts (email, password) VALUES (?, ?)",
+        email,
+        hashedPassword
+    )
 end

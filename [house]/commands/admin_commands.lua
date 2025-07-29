@@ -8,14 +8,14 @@ function createHouseForPlayer(thePlayer, command, price, x, y, z)
         return
     end
 
-    local result = createHouse(x, y, z, tonumber(price))
-    if result then
-        outputChatBox("House created successfully at (" .. x .. ", " .. y .. ", " .. z .. ") for $" .. price .. ".", thePlayer, 0, 255, 0)
-    else
-        outputChatBox("Failed to create house. Please try again later.", thePlayer, 255, 0, 0)
-    end
-
-    updateHouseRadar();
+    createHouse(x, y, z, tonumber(price), function(result)
+        if result then
+            outputChatBox("House created successfully at (" .. x .. ", " .. y .. ", " .. z .. ") for $" .. price .. ".", thePlayer, 0, 255, 0)
+            updateHouseRadar()
+        else
+            outputChatBox("Failed to create house. Please try again later.", thePlayer, 255, 0, 0)
+        end
+    end)
 end
 
 
