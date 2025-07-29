@@ -1,5 +1,7 @@
 <meta>
 	<info author="PhantomDave" description="" version="2.0" type="gamemode"/>
+
+	<oop>true</oop>
 	
 	<script src="utils.lua" type="shared"/>
 	<script src="shared/events_constants.lua" type="shared"/>
