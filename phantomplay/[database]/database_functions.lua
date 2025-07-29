@@ -34,7 +34,6 @@ function queryAsync(queryStr, callback, ...)
     end, {}, DBConnection, queryStr, ...)
 end
 
--- executeAsync: async execute for non-insert statements (callback receives rowsAffected)
 function executeAsync(queryStr, callback, ...)
     dbQuery(function(qh)
         local _, numRows = dbPoll(qh, -1)

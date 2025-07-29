@@ -50,6 +50,10 @@ addEventHandler(EVENTS.CHARACTERS.OPEN_CHARACTER_SELECTION, localPlayer,
             createCharacterSelectionWindow()
         end
 
+        if(guiGetVisible(wdwCharCreation)) then
+            guiSetVisible(wdwCharCreation, false)
+        end
+
         guiGridListClear(gridListCharacters)
         
         if characters and isTableNotEmpty(characters) then

@@ -1,5 +1,5 @@
 function initializeCharacterDatabase()
-    local result = query("CREATE TABLE IF NOT EXISTS characters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT, gender VARCHAR(16), skin VARCHAR(16), account_id INT, FOREIGN KEY (account_id) REFERENCES accounts(id))")
+    local result = query("CREATE TABLE IF NOT EXISTS characters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT, gender VARCHAR(16), skin VARCHAR(16), cash INT(11), bank INT(11), account_id INT, FOREIGN KEY (account_id) REFERENCES accounts(id))")
     if result then
         outputDebugString("[DEBUG] Characters table creation query executed successfully.")
         --triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
@@ -36,19 +36,39 @@ function GetCharactersByAccountId(accountId, callback)
     end)
 end
 
-function CreateCharacter(name, age, gender, skin, accountId)
+function CreateCharacter(name, age, gender, skin, accountId, callback)
     if not name or not age or not gender or not skin or not accountId then
         outputDebugString("[DEBUG] CreateCharacter called with nil values.")
-        return false
+        if callback then callback(false) end
+        return
     end
     local queryString = string.format("INSERT INTO characters (name, age, gender, skin, account_id) VALUES ('%s', %d, '%s', '%s', %d)", name, age, gender, skin, accountId)
     insertAsync(queryString, function(result)
         if result > 0 then
             outputDebugString("[DEBUG] Character created successfully: " .. name)
-            return true
+            if callback then callback(true) end
         else
             outputDebugString("[DEBUG] Character creation failed for: " .. name)
-            return false
+            if callback then callback(false) end
+        end
+    end)
+end
+
+function UpdateCharacter(characterData, callback)
+    if not characterData or not characterData.id then
+        outputDebugString("[DEBUG] UpdateCharacter called with invalid data.")
+        if callback then callback(false) end
+        return
+    end
+    local queryString = string.format("UPDATE characters SET name = '%s', age = %d, gender = '%s', skin = '%s', cash = %d, bank = %d WHERE id = %d",
+        characterData.name, characterData.age, characterData.gender, characterData.skin, characterData.cash, characterData.bank, characterData.id)
+    executeAsync(queryString, function(result)
+        if result then
+            outputDebugString("[DEBUG] Character updated successfully: " .. characterData.name)
+            if callback then callback(true) end
+        else
+            outputDebugString("[DEBUG] Character update failed for: " .. characterData.name)
+            if callback then callback(false) end
         end
     end)
 end

@@ -14,6 +14,7 @@
 	<script src="[account]/[server]/events/register_events.lua" type="server"/>
 	<script src="[characters]/[server]/database.lua" type="server"/>
 	<script src="[characters]/[server]/events.lua" type="server"/>
+	<script src="[characters]/[server]/functions.lua" type="server"/>
 
 	<!-- Client -->
 	<script src="[account]/[client]/main.lua" type="client"/>
