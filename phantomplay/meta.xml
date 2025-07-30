@@ -1,27 +1,110 @@
 <meta>
-	<info author="PhantomDave" description="" version="2.0" type="gamemode"/>
+	<info author="PhantomPlay" version="1.0" name="phantomplay" description="PhantomPlay Roleplay Server" />
+	
+	<oop>true</oop>
+	
+	<!-- Shared Files -->
+	<script src="shared/events_constants.lua" type="shared" />
+	
+	<!-- Utilities -->
+	<script src="utils.lua" type="server" />
+	
+	<!-- Database System -->
+	<script src="[database]/**/*.lua" type="server" />
+	
+	<!-- Player Management System -->
+	<script src="[player]/Player.lua" type="server" />
+	
+	<!-- Account System -->
+	<script src="[account]/[server]/**/*.lua" type="server" />
+	<script src="[account]/[client]/**/*.lua" type="client" />
+	
+	<!-- Character System -->
+	<script src="[characters]/[server]/**/*.lua" type="server" />
+	<script src="[characters]/[client]/**/*.lua" type="client" />
+	
+	<!-- House System -->
+	<script src="[house]/**/*.lua" type="server" />
+	
+	<!-- Admin System -->
+	<script src="[admin]/[server]/**/*.lua" type="server" />
 
-	<script src="utils.lua" type="shared"/>
-	<script src="shared/events_constants.lua" type="shared"/>
-	<script src="main.lua" type="server"/>
-	<script src="[database]/init/init.lua" type="server"/>
-	<script src="[database]/functions.lua" type="server"/>
-	<script src="[house]/main.lua" type="server"/>
-	<script src="[house]/commands/admin.lua" type="server"/>
-	<script src="[house]/database/database.lua" type="server"/>
-	<script src="[account]/[server]/database.lua" type="server"/>
-	<script src="[account]/[server]/events/login_events.lua" type="server"/>
-	<script src="[account]/[server]/events/register_events.lua" type="server"/>
-	<script src="[characters]/[server]/database.lua" type="server"/>
-	<script src="[characters]/[server]/events.lua" type="server"/>
-	<script src="[characters]/[server]/functions.lua" type="server"/>
+	<settings>
+		<!-- MySQL Configuration -->		
+		<setting name="dbtype" value="mysql"/>
+		<setting name="dbname" value="mta_sa"/>
+		<setting name="dbhost" value="db"/>
+		<setting name="dbuser" value="my_user"/>
+		<setting name="dbpassword" value="user_password"/>
 
-	<!-- Client -->
-	<script src="[account]/[client]/main.lua" type="client"/>
-	<script src="[account]/[client]/gui/login.lua" type="client"/>
-	<script src="[account]/[client]/gui/register.lua" type="client"/>
-	<script src="[characters]/[client]/main.lua" type="client"/>
-	<script src="[characters]/[client]/gui/selector.lua" type="client"/>
-	<script src="[characters]/[client]/gui/creator.lua" type="client"/>
+		<!-- Server Configuration -->
+		<!--    <setting name="phantomplay.server.name" value="PhantomPlay Roleplay Server" />-->
+		<!--    <setting name="phantomplay.server.version" value="1.0" />-->
+		<!--    <setting name="phantomplay.server.max_players" value="100" />-->
 
+		<!-- Gameplay Settings -->
+		<setting name="phantomplay.gameplay.starting_money" value="5000" />
+		<setting name="phantomplay.gameplay.max_characters_per_account" value="3" />
+		<setting name="phantomplay.gameplay.afk_timeout" value="300" />
+		<setting name="phantomplay.gameplay.save_interval" value="60" />
+
+		<!-- Character Settings -->
+		<setting name="phantomplay.character.min_age" value="16" />
+		<setting name="phantomplay.character.max_age" value="100" />
+		<setting name="phantomplay.character.default_spawn_x" value="1684.9" />
+		<setting name="phantomplay.character.default_spawn_y" value="-2244.5" />
+		<setting name="phantomplay.character.default_spawn_z" value="13.5" />
+		<setting name="phantomplay.character.default_spawn_rotation" value="0" />
+		<setting name="phantomplay.character.default_interior" value="0" />
+		<setting name="phantomplay.character.default_dimension" value="0" />
+
+		<!-- House System Settings -->
+		<setting name="phantomplay.house.default_price" value="50000" />
+		<setting name="phantomplay.house.max_houses_per_player" value="5" />
+		<setting name="phantomplay.house.sell_percentage" value="0.8" />
+
+		<!-- Admin Settings -->
+		<setting name="phantomplay.admin.log_actions" value="true" />
+		<setting name="phantomplay.admin.broadcast_kicks" value="true" />
+		<setting name="phantomplay.admin.broadcast_bans" value="true" />
+
+		<!-- Security Settings -->
+		<setting name="phantomplay.security.password_min_length" value="6" />
+		<setting name="phantomplay.security.password_max_length" value="50" />
+		<setting name="phantomplay.security.username_min_length" value="3" />
+		<setting name="phantomplay.security.username_max_length" value="20" />
+		<setting name="phantomplay.security.max_login_attempts" value="3" />
+		<setting name="phantomplay.security.login_timeout" value="300" />
+
+		<!-- Economy Settings -->
+		<setting name="phantomplay.economy.interest_rate" value="0.05" />
+		<setting name="phantomplay.economy.max_bank_balance" value="10000000" />
+		<setting name="phantomplay.economy.transaction_fee" value="0.01" />
+
+		<!-- Performance Settings -->
+		<setting name="phantomplay.performance.debug_mode" value="true" />
+		<setting name="phantomplay.performance.log_queries" value="true" />
+		<setting name="phantomplay.performance.max_query_time" value="5000" />
+
+		<!-- Roleplay Settings -->
+		<setting name="phantomplay.roleplay.name_format" value="Firstname_Lastname" />
+		<setting name="phantomplay.roleplay.enable_ooc_chat" value="true" />
+		<setting name="phantomplay.roleplay.enable_me_commands" value="true" />
+		<setting name="phantomplay.roleplay.chat_distance" value="20" />
+
+		<!-- Vehicle Settings -->
+		<setting name="phantomplay.vehicle.max_vehicles_per_player" value="3" />
+		<setting name="phantomplay.vehicle.despawn_time" value="600" />
+		<setting name="phantomplay.vehicle.fuel_consumption" value="true" />
+
+		<!-- Weather and Time Settings -->
+		<setting name="phantomplay.world.weather_cycle" value="true" />
+		<setting name="phantomplay.world.time_cycle" value="true" />
+		<setting name="phantomplay.world.time_speed" value="1" />
+
+		<!-- Backup Settings -->
+		<setting name="phantomplay.backup.enabled" value="true" />
+		<setting name="phantomplay.backup.interval" value="3600" />
+		<setting name="phantomplay.backup.max_backups" value="10" />
+	</settings>
 </meta>

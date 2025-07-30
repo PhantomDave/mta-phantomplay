@@ -47,7 +47,7 @@ function CreateCharacter(button, state)
                 age = age,
                 gender = gender,
                 skin = skin,
-                accountId = getAccountData().id
+                accountId = getAccountId() -- Updated to use the new helper function
             })
         else
             outputChatBox("Please fill in all fields.")

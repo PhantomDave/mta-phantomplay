@@ -1,0 +1,55 @@
+function onHouseDatabaseConnected()
+    House.initializeDatabase()
+end
+
+function getHouses(callback)
+    House.getAll(function(houses)
+        if houses then
+            local houseData = {}
+            for _, house in ipairs(houses) do
+                table.insert(houseData, house:getData())
+            end
+            callback(houseData)
+        else
+            callback({})
+        end
+    end)
+end
+
+function getHouseById(callback, houseId)
+    House.getById(houseId, function(house)
+        if house then
+            callback(house:getData())
+        else
+            callback(nil)
+        end
+    end)
+end
+
+function createHouse(x, y, z, price, callback)
+    House.createNew(x, y, z, price, function(house)
+        if house then
+            -- Create visuals for the new house
+            house:createVisuals()
+            if callback then callback(true) end
+        else
+            if callback then callback(false) end
+        end
+    end)
+end
+
+-- Helper function to add house to radar (legacy compatibility)
+function addHouseToRadar(houseData)
+    local house = House:create(houseData)
+    house:createVisuals()
+end
+
+-- Helper function to update house radar (legacy compatibility)
+function updateHouseRadar()
+    House.getAll(function(houses)
+        for _, house in ipairs(houses) do
+            house:createVisuals()
+        end
+        outputDebugString("[DEBUG] House radar updated with " .. #houses .. " houses.")
+    end)
+end

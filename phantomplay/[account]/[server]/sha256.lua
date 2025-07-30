@@ -1,9 +1,68 @@
 -- Simple SHA-256 implementation for Lua (pure Lua, public domain)
 -- Source: https://github.com/Egor-Skriptunoff/pure_lua_SHA
 -- Usage: local hash = sha256("your string")
+-- Modified for MTA:SA Lua 5.1 compatibility
 
 local MOD = 2^32
-local function rrotate(x, n) return ((x >> n) | (x << (32-n))) & 0xffffffff end
+
+-- Bitwise operations for Lua 5.1 compatibility
+local function band(a, b)
+    local result = 0
+    local bitval = 1
+    while a > 0 and b > 0 do
+        if a % 2 == 1 and b % 2 == 1 then
+            result = result + bitval
+        end
+        bitval = bitval * 2
+        a = math.floor(a / 2)
+        b = math.floor(b / 2)
+    end
+    return result
+end
+
+local function bor(a, b)
+    local result = 0
+    local bitval = 1
+    while a > 0 or b > 0 do
+        if a % 2 == 1 or b % 2 == 1 then
+            result = result + bitval
+        end
+        bitval = bitval * 2
+        a = math.floor(a / 2)
+        b = math.floor(b / 2)
+    end
+    return result
+end
+
+local function bxor(a, b)
+    local result = 0
+    local bitval = 1
+    while a > 0 or b > 0 do
+        if (a % 2) ~= (b % 2) then
+            result = result + bitval
+        end
+        bitval = bitval * 2
+        a = math.floor(a / 2)
+        b = math.floor(b / 2)
+    end
+    return result
+end
+
+local function bnot(a)
+    return (-1 - a) % MOD
+end
+
+local function rshift(a, n)
+    return math.floor(a / (2^n))
+end
+
+local function lshift(a, n)
+    return (a * (2^n)) % MOD
+end
+
+local function rrotate(x, n) 
+    return band(bor(rshift(x, n), lshift(x, 32-n)), 0xffffffff)
+end
 
 local function str2hexa(s)
     return (s:gsub('.', function(c) return string.format('%02x', string.byte(c)) end))
@@ -21,7 +80,9 @@ end
 
 local function s232num(s, i)
     local n = 0
-    for i = i, i + 3 do n = n*256 + string.byte(s, i) end
+    for j = i, i + 3 do 
+        n = n * 256 + string.byte(s, j) 
+    end
     return n
 end
 
@@ -62,21 +123,23 @@ local function sha256(msg)
     msg = preproc(msg, #msg)
     local w = {}
     for i = 1, #msg, 64 do
-        for j = 1, 16 do w[j] = s232num(msg, i + (j-1)*4) end
+        for j = 1, 16 do 
+            w[j] = s232num(msg, i + (j-1)*4) 
+        end
         for j = 17, 64 do
             local v = w[j-15]
-            local s0 = rrotate(v, 7) ~ rrotate(v, 18) ~ (v >> 3)
+            local s0 = bxor(bxor(rrotate(v, 7), rrotate(v, 18)), rshift(v, 3))
             v = w[j-2]
-            local s1 = rrotate(v, 17) ~ rrotate(v, 19) ~ (v >> 10)
+            local s1 = bxor(bxor(rrotate(v, 17), rrotate(v, 19)), rshift(v, 10))
             w[j] = (w[j-16] + s0 + w[j-7] + s1) % MOD
         end
-        local a, b, c, d, e, f, g, h = table.unpack(H)
+        local a, b, c, d, e, f, g, h = H[1], H[2], H[3], H[4], H[5], H[6], H[7], H[8]
         for j = 1, 64 do
-            local S1 = rrotate(e, 6) ~ rrotate(e, 11) ~ rrotate(e, 25)
-            local ch = (e & f) ~ ((~e) & g)
+            local S1 = bxor(bxor(rrotate(e, 6), rrotate(e, 11)), rrotate(e, 25))
+            local ch = bxor(band(e, f), band(bnot(e), g))
             local temp1 = (h + S1 + ch + k[j] + w[j]) % MOD
-            local S0 = rrotate(a, 2) ~ rrotate(a, 13) ~ rrotate(a, 22)
-            local maj = (a & b) ~ (a & c) ~ (b & c)
+            local S0 = bxor(bxor(rrotate(a, 2), rrotate(a, 13)), rrotate(a, 22))
+            local maj = bxor(bxor(band(a, b), band(a, c)), band(b, c))
             local temp2 = (S0 + maj) % MOD
             h = g
             g = f
@@ -97,8 +160,13 @@ local function sha256(msg)
         H[8] = (H[8] + h) % MOD
     end
     local digest = ""
-    for i = 1, 8 do digest = digest .. num2s(H[i], 4) end
+    for i = 1, 8 do 
+        digest = digest .. num2s(H[i], 4) 
+    end
     return str2hexa(digest)
 end
 
-return sha256
+-- Export the function
+function sha256(input)
+    return sha256(input)
+end

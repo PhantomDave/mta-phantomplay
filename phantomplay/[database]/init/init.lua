@@ -1,19 +1,20 @@
-function connect ()
-    DBConnection = dbConnect("mysql", "dbname=mta_sa;host=db;charset=utf8", "my_user", "user_password", "share=1" )
+-- Database initialization using Database OOP class
 
-    if (not DBConnection) then
-        outputDebugString("Error: Failed to establish connection to the MySQL database server")
+function connect()
+    outputDebugString("[DEBUG] Attempting to connect to database...")
+    
+    if Database.initialize() then
+        outputDebugString("[DEBUG] Database initialization successful")
     else
-        outputDebugString("Success: Connected to the MySQL database server")
-        local success = triggerEvent(EVENTS.ON_DATABASE_CONNECTED, resourceRoot)        
-        if (not success) then
-            outputDebugString("Error: Failed to add event handler for database connection")
-        else
-            outputDebugString("Success: Event handler for database connection added")
-        end
+        outputDebugString("[ERROR] Database initialization failed")
     end
 end
 
+-- Clean up database connection on resource stop
+function disconnect()
+    Database.close()
+end
 
-addEventHandler (EVENTS.ON_RESOURCE_START, root, connect)
-addEvent(EVENTS.ON_DATABASE_CONNECTED, false)
+-- Initialize database connection when resource starts
+addEventHandler("onResourceStart", resourceRoot, connect)
+addEventHandler("onResourceStop", resourceRoot, disconnect)
