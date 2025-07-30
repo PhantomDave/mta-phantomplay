@@ -46,12 +46,12 @@
 
 
 	<settings>
-		<!-- MySQL Configuration (uncomment and configure if using MySQL) -->
-		<setting name="@database" myCustomKey="type" value="mysql"/>
-		<setting name="@database" myCustomKey="name" value="mta_sa"/>
-		<setting name="@database" myCustomKey="host" value="db"/>
-		<setting name="@database" myCustomKey="user" value="local_user"/>
-		<setting name="@database" myCustomKey="password" value="local_password"/>
+		<!-- MySQL Configuration -->		
+		<setting name="dbtype" value="mysql"/>
+		<setting name="dbname" value="mta_sa"/>
+		<setting name="dbhost" value="db"/>
+		<setting name="dbuser" value="my_user"/>
+		<setting name="dbpassword" value="user_password"/>
 
 		<!-- Server Configuration -->
 		<!--    <setting name="phantomplay.server.name" value="PhantomPlay Roleplay Server" />-->

@@ -22,26 +22,35 @@ end
 
 -- Static method to initialize main database connection
 function Database.initialize()
-    -- Try multiple methods to get settings
-    local resName = getResourceName(resource)
-    -- Method 1: Direct get with resource
-    local dbType = get(resName .. '.database.type')
-    local dbName = get(resName .. '.database.name')
-    local dbHost = get(resName .. '.database.host')
-    local dbUser = get(resName .. '.database.user')
-    local dbPass = get(resName .. '.database.password')
-        
-    iprint("[DEBUG] Settings retrieval method:")
-    iprint("[DEBUG] Resource name: " .. getResourceName(resource))
-    iprint("[DEBUG] Database Type: " .. dbType)
-    iprint("[DEBUG] Database Name: " .. dbName)
-    iprint("[DEBUG] Database Host: " .. dbHost)
-    iprint("[DEBUG] Database User: " .. (dbUser ~= "" and "***" or "empty"))
+    -- Get database settings using the correct MTA settings system
+    local dbType = get("dbtype")
+    local dbName = get("dbname")
+    local dbHost = get("dbhost")
+    local dbUser = get("dbuser")
+    local dbPass = get("dbpassword")
     
-    local connectionString
+    if not dbType or dbType == false or dbType == "" then
+        outputDebugString("[ERROR] Database type setting not found! Check meta.xml settings.", 1)
+        return false
+    end
+    
+    if not dbName or dbName == false or dbName == "" then
+        outputDebugString("[ERROR] Database name setting not found! Check meta.xml settings.", 1)
+        return false
+    end
+    
     if dbType == "mysql" then
+        if not dbHost or dbHost == false or dbHost == "" then
+            outputDebugString("[ERROR] MySQL host setting not found! Check meta.xml settings.", 1)
+            return false
+        end
+        if not dbUser or dbUser == false or dbUser == "" then
+            outputDebugString("[ERROR] MySQL user setting not found! Check meta.xml settings.", 1)
+            return false
+        end
         connectionString = "dbname=" .. dbName .. ";host=" .. dbHost .. ";charset=utf8"
     else
+        -- For SQLite
         connectionString = dbName
     end
     
