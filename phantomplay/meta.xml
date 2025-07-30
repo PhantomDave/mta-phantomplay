@@ -4,11 +4,11 @@
 	<script src="utils.lua" type="shared"/>
 	<script src="shared/events_constants.lua" type="shared"/>
 	<script src="main.lua" type="server"/>
-	<script src="[database]/init/database_init.lua" type="server"/>
-	<script src="[database]/database_functions.lua" type="server"/>
-	<script src="[house]/main_house.lua" type="server"/>
-	<script src="[house]/commands/admin_commands.lua" type="server"/>
-	<script src="[house]/database/database_house.lua" type="server"/>
+	<script src="[database]/init/init.lua" type="server"/>
+	<script src="[database]/functions.lua" type="server"/>
+	<script src="[house]/main.lua" type="server"/>
+	<script src="[house]/commands/admin.lua" type="server"/>
+	<script src="[house]/database/database.lua" type="server"/>
 	<script src="[account]/[server]/database.lua" type="server"/>
 	<script src="[account]/[server]/events/login_events.lua" type="server"/>
 	<script src="[account]/[server]/events/register_events.lua" type="server"/>
@@ -21,7 +21,7 @@
 	<script src="[account]/[client]/gui/login.lua" type="client"/>
 	<script src="[account]/[client]/gui/register.lua" type="client"/>
 	<script src="[characters]/[client]/main.lua" type="client"/>
-	<script src="[characters]/[client]/gui/character_selector.lua" type="client"/>
-	<script src="[characters]/[client]/gui/character_creator.lua" type="client"/>
+	<script src="[characters]/[client]/gui/selector.lua" type="client"/>
+	<script src="[characters]/[client]/gui/creator.lua" type="client"/>
 
 </meta>

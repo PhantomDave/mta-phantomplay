@@ -1,11 +1,12 @@
 function onHouseDatabaseConnected()
-    local result = query("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner int(11), x FLOAT, y FLOAT, z FLOAT, price INT)")
-    if result then
-        outputDebugString("[DEBUG] House table creation query executed successfully.")
-        triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
-    else
-        outputDebugString("[DEBUG] House table creation query failed.")
-    end
+    local result = queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner int(11), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
+        if result then
+            outputDebugString("[DEBUG] House table creation query executed successfully.")
+            triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
+        else
+            outputDebugString("[DEBUG] House table creation query failed.")
+        end
+    end)
 end
 
 function getHouses(callback)
@@ -41,7 +42,7 @@ function createHouse(x, y, z, price, callback)
         return
     end
     outputDebugString("[DEBUG] Attempting to create house at (" .. x .. ", " .. y .. ", " .. z .. ") with price $" .. price .. ".")
-    local query = string.format("INSERT INTO houses (x,y,z, price) VALUES (%f, %f, %f, %d)", x, y, z, tonumber(price))
+    local query = "INSERT INTO houses (x,y,z, price) VALUES (?, ?, ?, ?)"
     -- use insertAsync to get the new record ID
     insertAsync(query, function(insertId, rowsAffected)
         if rowsAffected and rowsAffected > 0 then
@@ -51,7 +52,7 @@ function createHouse(x, y, z, price, callback)
             outputDebugString("[DEBUG] Failed to create house at (" .. x .. ", " .. y .. ", " .. z .. ").")
             if callback then callback(false) end
         end
-    end)
+    end, x, y, z, tonumber(price))
 end
 
 function initializeHouses()

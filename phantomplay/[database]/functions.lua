@@ -1,26 +1,3 @@
-function query(...)
-    local queryHandle = dbQuery(DBConnection, ...)
-    if (not queryHandle) then
-        return nil
-    end
-    local result, numRows, errorMsg = dbPoll(queryHandle, -1)
-    if not result then
-        outputDebugString("Error: Query failed - " .. tostring(errorMsg))
-        return nil
-    end
-    return result
-end
- 
-function execute(...)
-    local queryHandle = dbQuery(DBConnection, ...)
-    local result, numRows = dbPoll(queryHandle, -1)
-    return numRows
-end
-
-function getDBConnection()
-    return DBConnection
-end
-
 -- Add asynchronous query function using dbQuery callback
 function queryAsync(queryStr, callback, ...)
     dbQuery(function(qh)
