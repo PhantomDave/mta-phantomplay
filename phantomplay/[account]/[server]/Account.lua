@@ -1,8 +1,13 @@
 -- Account class using MTA OOP system
 -- Based on https://wiki.multitheftauto.com/wiki/OOP_Introduction
 
+
 Account = {}
 Account.__index = Account
+
+if type(EVENTS) == "table" and EVENTS.ACCOUNTS and EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED then
+    addEvent(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, true)
+end
 
 -- Constructor
 function Account:create(data)
@@ -16,7 +21,7 @@ function Account:create(data)
     instance.password = data.password or nil
     instance.adminLevel = data.admin_level or 0
     instance.lastLogin = data.last_login or nil
-    instance.player = nil -- Associated player element
+    instance.player = nil
     
     return instance
 end
@@ -25,7 +30,6 @@ end
 function Account.initializeDatabase()
     queryAsync("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), admin_level INT DEFAULT 0, last_login DATETIME DEFAULT current_timestamp())", function(result)
         if result then
-            outputDebugString("[DEBUG] Account table creation query executed successfully.")
             triggerEvent(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, resourceRoot)
         else
             outputDebugString("[DEBUG] Account table creation query failed.")
@@ -42,15 +46,13 @@ function Account.login(email, password, callback)
     end
     
     local queryString = "SELECT * FROM accounts WHERE email = ? AND password = ?"
-    outputDebugString("[DEBUG] Executing login query: " .. queryString)
     
     queryAsync(queryString, function(result)
+        iprint(result)
         if result and #result > 0 then
-            outputDebugString("[DEBUG] Login successful for email: " .. email)
             local account = Account:create(result[1])
             callback(account)
         else
-            outputDebugString("[DEBUG] Login failed for email: " .. email)
             callback(nil)
         end
     end, email, password)
@@ -65,14 +67,11 @@ function Account.checkExists(email, username, callback)
     end
     
     local queryString = "SELECT * FROM accounts WHERE email = ? OR username = ?"
-    outputDebugString("[DEBUG] Executing user existence check query: " .. queryString)
-    
     queryAsync(queryString, function(result)
         callback(result and #result > 0)
     end, email, username)
 end
 
--- Static method to create new account
 function Account.register(email, username, password, callback)
     if not email or not username or not password then
         outputDebugString("[DEBUG] Account.register called with nil parameters.")
@@ -81,11 +80,8 @@ function Account.register(email, username, password, callback)
     end
     
     local queryString = "INSERT INTO accounts (email, username, password) VALUES (?, ?, ?)"
-    outputDebugString("[DEBUG] Executing user creation query: " .. queryString)
-    
     queryAsync(queryString, function(result)
         if result then
-            outputDebugString("[DEBUG] User created successfully: " .. username)
             callback(true)
         else
             outputDebugString("[DEBUG] User creation failed: " .. username)
@@ -94,7 +90,6 @@ function Account.register(email, username, password, callback)
     end, email, username, password)
 end
 
--- Instance method to save account data
 function Account:save(callback)
     if not self.id then
         outputDebugString("[DEBUG] Cannot save account without ID.")
@@ -103,11 +98,8 @@ function Account:save(callback)
     end
     
     local queryString = "UPDATE accounts SET email = ?, username = ?, password = ?, admin_level = ?, last_login = ? WHERE id = ?"
-    outputDebugString("[DEBUG] Executing account update query: " .. queryString)
-    
     queryAsync(queryString, function(result)
         if result then
-            outputDebugString("[DEBUG] Account updated successfully: " .. (self.username or "unknown"))
             if callback then callback(true) end
         else
             outputDebugString("[DEBUG] Account update failed: " .. (self.username or "unknown"))
@@ -118,7 +110,7 @@ end
 
 -- Instance method to update last login
 function Account:updateLastLogin(callback)
-    self.lastLogin = getRealTime().timestamp
+    self.lastLogin = os.date("%Y-%m-%d %H:%M:%S", getRealTime().timestamp)
     self:save(callback)
 end
 
@@ -130,17 +122,14 @@ function Account:setPlayer(player)
     end
 end
 
--- Instance method to get associated player
 function Account:getPlayer()
     return self.player
 end
 
--- Instance method to check if account is admin
 function Account:isAdmin()
     return self.adminLevel > 0
 end
 
--- Instance method to get account data as table
 function Account:getData()
     return {
         id = self.id,
@@ -151,7 +140,6 @@ function Account:getData()
     }
 end
 
--- Static method to get account from player
 function Account.getFromPlayer(player)
     if not isElement(player) then
         return nil
@@ -159,5 +147,4 @@ function Account.getFromPlayer(player)
     return getElementData(player, "account")
 end
 
--- Initialize database when database connection is established
-addEventHandler(EVENTS.ON_DATABASE_CONNECTED, root, Account.initializeDatabase)
+addEventHandler(EVENTS.ON_DATABASE_CONNECTED, resourceRoot, Account.initializeDatabase)

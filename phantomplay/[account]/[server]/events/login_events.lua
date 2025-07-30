@@ -1,13 +1,13 @@
 -- Login events using Account OOP class
 
 -- Handle login request from client
-local function onLoginRequest(username, password)
+local function onLoginRequest(email, password)
     local player = client
     if not player or not isElement(player) then
         return
     end
-    
-    Account.login(username, password, function(account)
+    local hashedPassword = sha256(email .. password)
+    Account.login(email, hashedPassword, function(account)
         if account then
             -- Login successful
             account:setPlayer(player)
@@ -56,8 +56,8 @@ local function onRegisterRequest(email, username, password)
         end
         
         -- Hash the password (using the sha256 function from sha256.lua)
-        local hashedPassword = sha256(password)
-        
+        local hashedPassword = sha256(email .. password)
+
         -- Create the account
         Account.register(email, username, hashedPassword, function(success)
             if success then

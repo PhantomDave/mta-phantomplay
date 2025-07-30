@@ -2,6 +2,11 @@
 -- Based on https://wiki.multitheftauto.com/wiki/OOP_Introduction
 
 Database = {}
+
+-- Register custom events
+if type(EVENTS) == "table" and EVENTS.ON_DATABASE_CONNECTED then
+    addEvent(EVENTS.ON_DATABASE_CONNECTED, true)
+end
 Database.__index = Database
 
 -- Static database connection
@@ -59,6 +64,7 @@ function Database.initialize()
     if Database.connection then
         Database.isConnected = true
         outputDebugString("[DEBUG] Database connected successfully (" .. dbType .. ")")
+        addEvent(EVENTS.ON_DATABASE_CONNECTED, false)
         triggerEvent(EVENTS.ON_DATABASE_CONNECTED, resourceRoot)
         return true
     else
@@ -92,7 +98,6 @@ function Database.queryAsync(queryStr, callback, ...)
             outputDebugString("[ERROR] Query failed: " .. tostring(errorMsg) .. " | Query: " .. queryStr)
             if callback then callback(nil) end
         else
-            outputDebugString("[DEBUG] Query executed successfully: " .. queryStr)
             if callback then callback(result, numRows) end
         end
         dbFree(qh)
@@ -116,7 +121,6 @@ function Database.executeAsync(queryStr, callback, ...)
             outputDebugString("[ERROR] Execute failed: " .. tostring(errorMsg) .. " | Query: " .. queryStr)
             if callback then callback(0) end
         else
-            outputDebugString("[DEBUG] Execute completed: " .. queryStr .. " (Affected rows: " .. (numRows or 0) .. ")")
             if callback then callback(numRows or 0) end
         end
         dbFree(qh)

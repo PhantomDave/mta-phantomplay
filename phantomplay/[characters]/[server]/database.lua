@@ -1,9 +1,3 @@
-function initializeCharacterDatabase()
-    Character.initializeDatabase()
-end
-
-addEventHandler(EVENTS.ON_DATABASE_CONNECTED, root, initializeCharacterDatabase)
-
 function GetCharacterById(characterId, callback)
     Character.getById(characterId, function(character)
         if character then
