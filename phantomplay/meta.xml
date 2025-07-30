@@ -8,7 +8,7 @@
 	<script src="[database]/database_functions.lua" type="server"/>
 	<script src="[house]/main_house.lua" type="server"/>
 	<script src="[house]/commands/admin_commands.lua" type="server"/>
-	<script src="[house]/database/database_house.lua" type="server"/>
+	<script src="[house]/database/database.lua" type="server"/>
 	<script src="[account]/[server]/database.lua" type="server"/>
 	<script src="[account]/[server]/events/login_events.lua" type="server"/>
 	<script src="[account]/[server]/events/register_events.lua" type="server"/>
