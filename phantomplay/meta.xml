@@ -1,46 +1,41 @@
 <meta>
 	<info author="PhantomPlay" version="1.0" name="phantomplay" description="PhantomPlay Roleplay Server" />
-	
+
 	<oop>true</oop>
-	
+
 	<!-- Shared Files -->
 	<script src="shared/events_constants.lua" type="shared" />
-	
+
 	<!-- Utilities -->
 	<script src="utils.lua" type="server" />
-	
+
 	<!-- Database System -->
 	<script src="[database]/**/*.lua" type="server" />
-	
+
 	<!-- Player Management System -->
 	<script src="[player]/Player.lua" type="server" />
-	
+
 	<!-- Account System -->
 	<script src="[account]/[server]/**/*.lua" type="server" />
 	<script src="[account]/[client]/**/*.lua" type="client" />
-	
+
 	<!-- Character System -->
 	<script src="[characters]/[server]/**/*.lua" type="server" />
 	<script src="[characters]/[client]/**/*.lua" type="client" />
-	
+
 	<!-- House System -->
 	<script src="[house]/**/*.lua" type="server" />
-	
+
 	<!-- Admin System -->
 	<script src="[admin]/[server]/**/*.lua" type="server" />
 
 	<settings>
-		<!-- MySQL Configuration -->		
+		<!-- MySQL Configuration -->
 		<setting name="dbtype" value="mysql"/>
 		<setting name="dbname" value="mta_sa"/>
 		<setting name="dbhost" value="db"/>
 		<setting name="dbuser" value="my_user"/>
 		<setting name="dbpassword" value="user_password"/>
-
-		<!-- Server Configuration -->
-		<!--    <setting name="phantomplay.server.name" value="PhantomPlay Roleplay Server" />-->
-		<!--    <setting name="phantomplay.server.version" value="1.0" />-->
-		<!--    <setting name="phantomplay.server.max_players" value="100" />-->
 
 		<!-- Gameplay Settings -->
 		<setting name="phantomplay.gameplay.starting_money" value="5000" />
