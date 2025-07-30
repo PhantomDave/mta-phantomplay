@@ -1,36 +1,27 @@
--- Add asynchronous query function using dbQuery callback
+-- Legacy database functions for backward compatibility
+-- These functions now use the Database OOP class internally
+
 function queryAsync(queryStr, callback, ...)
-    dbQuery(function(qh)
-        local result, numRows, errorMsg = dbPoll(qh, -1)
-        if not result then
-            outputDebugString("Error: Async Query failed - " .. tostring(errorMsg))
-            callback(nil)
-        else
-            callback(result, numRows)
-        end
-    end, {}, DBConnection, queryStr, ...)
+    return Database.queryAsync(queryStr, callback, ...)
 end
 
 function executeAsync(queryStr, callback, ...)
-    dbQuery(function(qh)
-        local _, numRows = dbPoll(qh, -1)
-        callback(numRows)
-        dbFree(qh)
-    end, {}, DBConnection, queryStr, ...)
+    return Database.executeAsync(queryStr, callback, ...)
 end
 
 function insertAsync(queryStr, callback, ...)
-    dbQuery(function(qh)
-        local _, numRows = dbPoll(qh, -1)
-        dbQuery(function(qh2)
-            local res2 = dbPoll(qh2, -1)
-            local insertId = nil
-            if res2 and res2[1] then
-                insertId = res2[1].id or res2[1]["LAST_INSERT_ID()"]
-            end
-            callback(insertId, numRows)
-            dbFree(qh2)
-        end, {}, DBConnection, "SELECT LAST_INSERT_ID() AS id")
-        dbFree(qh)
-    end, {}, DBConnection, queryStr, ...)
+    return Database.insertAsync(queryStr, callback, ...)
 end
+
+-- Helper function to get database connection (legacy compatibility)
+function getDBConnection()
+    return Database.getConnection()
+end
+
+-- Legacy variable for backward compatibility
+DBConnection = nil
+
+-- Update the legacy connection variable when database connects
+addEventHandler(EVENTS.ON_DATABASE_CONNECTED, root, function()
+    DBConnection = Database.getConnection()
+end)
