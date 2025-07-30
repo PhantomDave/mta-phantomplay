@@ -25,7 +25,7 @@ function GetCharactersByAccountId(accountId, callback)
         else
             callback(nil)
         end
-    end)
+    end, accountId)
 end
 
 function CreateCharacter(name, age, gender, skin, accountId, callback)
@@ -35,7 +35,7 @@ function CreateCharacter(name, age, gender, skin, accountId, callback)
         else
             callback(false)
         end
-    end)
+    end, name, age, gender, skin, accountId)
 end
 
 function UpdateCharacter(characterData, callback)
@@ -60,7 +60,7 @@ function UpdateCharacter(characterData, callback)
             outputDebugString("[DEBUG] Character not found for update.")
             if callback then callback(false) end
         end
-    end)
+    end, characterData.name, characterData.age, characterData.gender, characterData.skin, characterData.cash, characterData.bank, characterData.id)
 end
 
 -- Helper function to get character data from player (legacy compatibility)
