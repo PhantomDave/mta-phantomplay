@@ -1,5 +1,5 @@
 function initializeAccountDatabase()
-    local result = queryAsync("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), admin_level INT DEFAULT 0, last_login DATETIME DEFAULT current_timestamp())", function(result)
+    queryAsync("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), admin_level INT DEFAULT 0, last_login DATETIME DEFAULT current_timestamp())", function(result)
         if result then
             outputDebugString("[DEBUG] Account table creation query executed successfully.")
             --triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
@@ -57,4 +57,47 @@ function RegisterUser(username, email, password)
             return false
         end
     end, email, username, hashedPassword)
+end
+
+function UpdateAccount(player)
+    if not player or not isElement(player) then
+        outputDebugString("[DEBUG] UpdatePlayer called with invalid player element.")
+        return
+    end
+
+    local accountData = getAccountData(player)
+    if not accountData or not accountData.id then
+        outputDebugString("[DEBUG] No account data found for player: " .. getPlayerName(player))
+        return
+    end
+
+    local setParts = {}
+    local values = {}
+    local excludeFields = {id = true, last_login = true}
+    
+    for key, value in pairs(accountData) do
+        if not excludeFields[key] and value ~= nil then
+            table.insert(setParts, key .. " = ?")
+            table.insert(values, value)
+        end
+    end
+    
+    table.insert(setParts, "last_login = NOW()")
+    
+    if #setParts == 1 then -- Only last_login update
+        outputDebugString("[DEBUG] No fields to update for player: " .. getPlayerName(player))
+        return
+    end
+    
+    table.insert(values, accountData.id)
+    
+    local queryString = "UPDATE accounts SET " .. table.concat(setParts, ", ") .. " WHERE id = ?"
+    
+    executeAsync(queryString, function(result)
+        if result > 0 then
+            outputDebugString("[DEBUG] Player data updated successfully for: " .. getPlayerName(player) .. " (Updated " .. (#setParts) .. " fields)")
+        else
+            outputDebugString("[DEBUG] Failed to update player data for: " .. getPlayerName(player))
+        end
+    end, unpack(values))
 end
