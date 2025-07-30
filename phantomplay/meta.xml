@@ -1,27 +1,42 @@
 <meta>
-	<info author="PhantomDave" description="" version="2.0" type="gamemode"/>
-
-	<script src="utils.lua" type="shared"/>
-	<script src="shared/events_constants.lua" type="shared"/>
-	<script src="main.lua" type="server"/>
-	<script src="[database]/init/init.lua" type="server"/>
-	<script src="[database]/functions.lua" type="server"/>
-	<script src="[house]/main.lua" type="server"/>
-	<script src="[house]/commands/admin.lua" type="server"/>
-	<script src="[house]/database/database.lua" type="server"/>
-	<script src="[account]/[server]/database.lua" type="server"/>
-	<script src="[account]/[server]/events/login_events.lua" type="server"/>
-	<script src="[account]/[server]/events/register_events.lua" type="server"/>
-	<script src="[characters]/[server]/database.lua" type="server"/>
-	<script src="[characters]/[server]/events.lua" type="server"/>
-	<script src="[characters]/[server]/functions.lua" type="server"/>
-
-	<!-- Client -->
-	<script src="[account]/[client]/main.lua" type="client"/>
-	<script src="[account]/[client]/gui/login.lua" type="client"/>
-	<script src="[account]/[client]/gui/register.lua" type="client"/>
-	<script src="[characters]/[client]/main.lua" type="client"/>
-	<script src="[characters]/[client]/gui/selector.lua" type="client"/>
-	<script src="[characters]/[client]/gui/creator.lua" type="client"/>
-
+	<info author="PhantomPlay" version="1.0" name="phantomplay" description="PhantomPlay Roleplay Server" />
+	
+	<oop>true</oop>
+	
+	<!-- Shared Files -->
+	<script src="shared/events_constants.lua" type="shared" />
+	
+	<!-- Utilities -->
+	<script src="utils.lua" type="server" />
+	
+	<!-- Database System -->
+	<script src="[database]/functions.lua" type="server" />
+	<script src="[database]/init/init.lua" type="server" />
+	
+	<!-- Account System -->
+	<script src="[account]/sha256.lua" type="server" />
+	<script src="[account]/[server]/Account.lua" type="server" />
+	<script src="[account]/[server]/database.lua" type="server" />
+	<script src="[account]/[server]/events/login_events.lua" type="server" />
+	<script src="[account]/[client]/main.lua" type="client" />
+	
+	<!-- Character System -->
+	<script src="[characters]/[server]/Character.lua" type="server" />
+	<script src="[characters]/[server]/database.lua" type="server" />
+	<script src="[characters]/[server]/events.lua" type="server" />
+	<script src="[characters]/[server]/functions.lua" type="server" />
+	<script src="[characters]/[client]/main.lua" type="client" />
+	<script src="[characters]/[client]/gui/creator.lua" type="client" />
+	
+	<!-- House System -->
+	<script src="[house]/House.lua" type="server" />
+	<script src="[house]/database/database.lua" type="server" />
+	<script src="[house]/main.lua" type="server" />
+	
+	<!-- Admin System -->
+	<script src="[admin]/Admin.lua" type="server" />
+	<script src="[admin]/commands/admin.lua" type="server" />
+	
+	<!-- Main Entry Point -->
+	<script src="main.lua" type="server" />
 </meta>

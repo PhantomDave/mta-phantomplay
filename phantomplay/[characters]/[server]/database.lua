@@ -1,58 +1,41 @@
 function initializeCharacterDatabase()
-    local result = queryAsync("CREATE TABLE IF NOT EXISTS characters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT, gender VARCHAR(16), skin VARCHAR(16), cash INT(11), bank INT(11), account_id INT, FOREIGN KEY (account_id) REFERENCES accounts(id))", function(result)
-        if result then
-            outputDebugString("[DEBUG] Characters table creation query executed successfully.")
-            --triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
-        else
-            outputDebugString("[DEBUG] Characters table creation query failed.")
-        end
-    end)
+    Character.initializeDatabase()
 end
 
 addEventHandler(EVENTS.ON_DATABASE_CONNECTED, root, initializeCharacterDatabase)
 
 function GetCharacterById(characterId, callback)
-    if not characterId then
-        outputDebugString("[DEBUG] GetCharacterById called with nil characterId.")
-        if callback then callback(nil) end
-        return
-    end
-    local queryString = "SELECT * FROM characters WHERE id = ?"
-    queryAsync(queryString, function(result)
-        if callback then callback(result and result[1] or nil) end
-    end, characterId)
+    Character.getById(characterId, function(character)
+        if character then
+            callback(character:getData())
+        else
+            callback(nil)
+        end
+    end)
 end
 
 function GetCharactersByAccountId(accountId, callback)
-    if not accountId then
-        outputDebugString("[DEBUG] GetCharactersByAccountId called with nil accountId.")
-        if callback then callback(nil) end
-        return
-    end
-    local queryString = "SELECT * FROM characters WHERE account_id = ?"
-    queryAsync(queryString, function(result)
-        if callback then
-            callback(isTableNotEmpty(result) and result or nil)
+    Character.getByAccountId(accountId, function(characters)
+        if characters then
+            local characterData = {}
+            for _, character in ipairs(characters) do
+                table.insert(characterData, character:getData())
+            end
+            callback(characterData)
+        else
+            callback(nil)
         end
-    end, accountId)
+    end)
 end
 
 function CreateCharacter(name, age, gender, skin, accountId, callback)
-    if not name or not age or not gender or not skin or not accountId then
-        outputDebugString("[DEBUG] CreateCharacter called with nil values.")
-        if callback then callback(false) end
-        return
-    end
-    local queryString = "INSERT INTO characters (name, age, gender, skin, account_id) VALUES (?, ?, ?, ?, ?)"
-    insertAsync(queryString, function(result)
-        if result > 0 then
-            outputDebugString("[DEBUG] Character created successfully: " .. name)
-            if callback then callback(true) end
+    Character.createNew(name, age, gender, skin, accountId, function(character)
+        if character then
+            callback(true)
         else
-            outputDebugString("[DEBUG] Character creation failed for: " .. name)
-            if callback then callback(false) end
+            callback(false)
         end
-    end, name, age, gender, skin, accountId)
+    end)
 end
 
 function UpdateCharacter(characterData, callback)
@@ -61,14 +44,30 @@ function UpdateCharacter(characterData, callback)
         if callback then callback(false) end
         return
     end
-    local queryString = "UPDATE characters SET name = ?, age = ?, gender = ?, skin = ?, cash = ?, bank = ? WHERE id = ?"
-    executeAsync(queryString, function(result)
-        if result then
-            outputDebugString("[DEBUG] Character updated successfully: " .. characterData.name)
-            if callback then callback(true) end
+    
+    Character.getById(characterData.id, function(character)
+        if character then
+            -- Update character properties
+            character.name = characterData.name or character.name
+            character.age = characterData.age or character.age
+            character.gender = characterData.gender or character.gender
+            character.skin = characterData.skin or character.skin
+            character.cash = characterData.cash or character.cash
+            character.bank = characterData.bank or character.bank
+            
+            character:save(callback)
         else
-            outputDebugString("[DEBUG] Character update failed for: " .. characterData.name)
+            outputDebugString("[DEBUG] Character not found for update.")
             if callback then callback(false) end
         end
-    end, characterData.name, characterData.age, characterData.gender, characterData.skin, characterData.cash, characterData.bank, characterData.id)
+    end)
+end
+
+-- Helper function to get character data from player (legacy compatibility)
+function getCharacterData(player)
+    local character = Character.getFromPlayer(player)
+    if character then
+        return character:getData()
+    end
+    return nil
 end

@@ -1,77 +1,85 @@
-houses = {}
+-- House management using House OOP class
+local houses = {}
 
-function updateHouseRadar()
-    for _, house in ipairs(houses) do
-
-        if house.marker then
-            destroyElement(house.marker)
-            house.marker = nil
-            destroyElement(house.blip)
-            house.blip = nil
-            destroyElement(house.colShape)
-            house.colShape = nil
+-- Initialize houses when the house database is connected
+function initializeHouses()
+    House.getAll(function(houseList)
+        houses = houseList or {}
+        
+        -- Create visuals for all houses
+        for _, house in ipairs(houses) do
+            house:createVisuals()
         end
-
-        house.marker = createMarker(house.x, house.y, house.z + 1, "arrow", 1.5, 255, 255, 255, 150)
-        setElementDimension(house.marker, 0)
-        setElementInterior(house.marker, 0)
-        house.blip = createBlipAttachedTo(house.marker, 31, 0, 0, 0, 0, 255, 0, 9999)
-        setElementDimension(house.blip, 0)
-        house.colShape = createColSphere(house.x, house.y, house.z, 1.5)
-        setElementDimension(house.colShape, 0)
-
-        addEventHandler(EVENTS.ON_COLSHAPE_HIT, house.colShape, function(hitElement)
-            if getElementType(hitElement) == "player" then
-                bindKey(hitElement, "enter", "down", function()
-                    if house then
-                        outputChatBox("You are near a house at (" .. house.x .. ", " .. house.y .. ", " .. house.z .. "). Price: $" .. house.price, hitElement)
-                    else
-                        outputChatBox("No house found at this location.", hitElement, 255, 0, 0)
-                    end
-                end)
-            end
-        end)
-
-        addEventHandler(EVENTS.ON_COLSHAPE_LEAVE, house.colShape, function(leaveElement)
-            if getElementType(leaveElement) == "player" then
-                unbindKey(leaveElement, "enter", "down")
-            end
-        end)
-
-    end
-
-    outputDebugString("[DEBUG] House radar updated with " .. #houses .. " houses.")
+        
+        outputDebugString("[DEBUG] Loaded " .. #houses .. " houses from database.")
+    end)
 end
 
-function addHouseToRadar(house)
-    house.marker = createMarker(house.x, house.y, house.z + 1, "arrow", 1.5, 255, 255, 255, 150)
-    setElementDimension(house.marker, 0)
-    setElementInterior(house.marker, 0)
-    house.blip = createBlipAttachedTo(house.marker, 31, 0, 0, 0, 0, 255, 0, 9999)
-    setElementDimension(house.blip, 0)
-    house.colShape = createColSphere(house.x, house.y, house.z, 1.5)
-    setElementDimension(house.colShape, 0)
-
-    addEventHandler(EVENTS.ON_COLSHAPE_HIT, house.colShape, function(hitElement)
-        if getElementType(hitElement) == "player" then
-            bindKey(hitElement, "enter", "down", function()
-                if house then
-                    outputChatBox("You are near a house at (" .. house.x .. ", " .. house.y .. ", " .. house.z .. "). Price: $" .. house.price, hitElement)
-                else
-                    outputChatBox("No house found at this location.", hitElement, 255, 0, 0)
+-- Command to buy a house
+function buyHouseCommand(player)
+    -- Find the nearest house to the player
+    local px, py, pz = getElementPosition(player)
+    local nearestHouse = nil
+    local minDistance = math.huge
+    
+    for _, house in ipairs(houses) do
+        local distance = getDistanceBetweenPoints3D(px, py, pz, house.x, house.y, house.z)
+        if distance < 5 and distance < minDistance then
+            minDistance = distance
+            nearestHouse = house
+        end
+    end
+    
+    if nearestHouse then
+        if nearestHouse:isOwned() then
+            outputChatBox("This house is already owned.", player)
+        else
+            nearestHouse:sellTo(player, function(success)
+                if success then
+                    -- Refresh the house list
+                    initializeHouses()
                 end
             end)
         end
-    end)
+    else
+        outputChatBox("You are not near any house for sale.", player)
+    end
+end
 
-    addEventHandler(EVENTS.ON_COLSHAPE_LEAVE, house.colShape, function(leaveElement)
-        if getElementType(leaveElement) == "player" then
-            unbindKey(leaveElement, "enter", "down")
+-- Command to create a house (admin only)
+function createHouseCommand(player, x, y, z, price)
+    -- Check if player is admin
+    local account = Account.getFromPlayer(player)
+    if not account or not account:isAdmin() then
+        outputChatBox("You don't have permission to use this command.", player)
+        return
+    end
+    
+    if not x or not y or not z or not price then
+        outputChatBox("Usage: /createhouse <x> <y> <z> <price>", player)
+        return
+    end
+    
+    x, y, z, price = tonumber(x), tonumber(y), tonumber(z), tonumber(price)
+    if not x or not y or not z or not price or price <= 0 then
+        outputChatBox("Invalid parameters. All coordinates and price must be valid numbers.", player)
+        return
+    end
+    
+    House.createNew(x, y, z, price, function(house)
+        if house then
+            house:createVisuals()
+            table.insert(houses, house)
+            outputChatBox("House created successfully at (" .. x .. ", " .. y .. ", " .. z .. ") for $" .. price, player)
+        else
+            outputChatBox("Failed to create house.", player)
         end
     end)
-    
-    table.insert(houses, house)
-    outputDebugString("[DEBUG] House created (ID: " .. tostring(house.id) .. ") at (" .. house.x .. ", " .. house.y .. ", " .. house.z .. ") for $" .. house.price .. ".")
-    outputDebugString("[DEBUG] Total houses in radar: " .. #houses)
-
 end
+
+-- Register commands
+addCommandHandler("buyhouse", buyHouseCommand)
+addCommandHandler("createhouse", createHouseCommand)
+
+-- Initialize houses when database is ready
+addEventHandler(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, root, initializeHouses)
