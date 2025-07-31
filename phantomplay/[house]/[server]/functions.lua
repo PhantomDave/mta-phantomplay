@@ -1,4 +1,4 @@
-function buyHouseCommand(player, commandName, house)
+function buyHouseFunction(player, house)
 
     if not house then
         outputChatBox("House broken ", player)
@@ -10,9 +10,15 @@ function buyHouseCommand(player, commandName, house)
         return
     end
 
+    local character = Character.getFromPlayer(player)
+    iprint(character)
+    if not character then
+        return
+    end
+
     local price = house.price
-    if getPlayerMoney(player) < price then
-        outputChatBox("You do not have enough money to buy this house. Price: $" .. price, player)
+    if character:getMoney().bank < price and character:getMoney().cash < price then
+        outputChatBox("You do not have enough money to buy this house. Price: $" .. price .. " You have: $" .. (character:getMoney().cash + character:getMoney().bank), player)
         return
     end
 

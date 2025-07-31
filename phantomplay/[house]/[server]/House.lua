@@ -155,7 +155,8 @@ function House:createVisuals()
             textDisplayAddObserver(self.textDisplay, hitElement)
             bindKey(hitElement, "lalt", "down", function()
                 iprint("Attempting to buy house with ID: " .. self.id)
-                
+                buyHouseFunction(hitElement, self)
+
             end)
         end
     end)
