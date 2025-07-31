@@ -83,7 +83,6 @@ local function onPlayerLoginSuccess()
     
     -- Get characters for this account
     Character.getByAccountId(account.id, function(characters)
-        print(characters)
         if characters and #characters > 0 then
             -- Player has characters, show character selection
             local characterData = {}
