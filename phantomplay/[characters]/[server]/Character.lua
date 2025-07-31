@@ -201,10 +201,6 @@ function Character.getFromPlayer(player)
     return getElementData(player, "character")
 end
 
-function Character:getMoney()
-    return {cash = self.cash, bank = self.bank}
-end
-
 -- Instance method to delete character
 function Character:delete(callback)
     if not self.id then
