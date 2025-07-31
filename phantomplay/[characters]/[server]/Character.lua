@@ -18,8 +18,8 @@ function Character:create(data)
     instance.cash = data.cash or 5000
     instance.bank = data.bank or 0
     instance.accountId = data.account_id or nil
-    instance.player = nil -- Associated player element
-    instance.position = {x = 0, y = 0, z = 3} -- Default spawn position
+    instance.player = nil
+    instance.position = {x = 0, y = 0, z = 3}
     instance.rotation = 0
     
     return instance
@@ -29,7 +29,6 @@ end
 function Character.initializeDatabase()
     queryAsync("CREATE TABLE IF NOT EXISTS characters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT, gender VARCHAR(16), skin VARCHAR(16), cash INT(11), bank INT(11), account_id INT, FOREIGN KEY (account_id) REFERENCES accounts(id))", function(result)
         if result then
-            outputDebugString("[DEBUG] Characters table creation query executed successfully.")
             triggerEvent(EVENTS.CHARACTERS.ON_CHARACTER_DATABASE_CONNECTED, resourceRoot)
         else
             outputDebugString("[DEBUG] Characters table creation query failed.")
@@ -85,7 +84,6 @@ function Character.createNew(name, age, gender, skin, accountId, callback)
         if callback then callback(nil) end
         return
     end
-    
     local queryString = "INSERT INTO characters (name, age, gender, skin, account_id) VALUES (?, ?, ?, ?, ?)"
     insertAsync(queryString, function(result)
         if result and result > 0 then
@@ -159,28 +157,6 @@ function Character:spawn(x, y, z, rotation)
     return true
 end
 
--- Instance method to add money
-function Character:addMoney(amount)
-    if not amount or amount <= 0 then return false end
-    
-    self.cash = self.cash + amount
-    if self.player and isElement(self.player) then
-        setPlayerMoney(self.player, self.cash)
-    end
-    return true
-end
-
--- Instance method to take money
-function Character:takeMoney(amount)
-    if not amount or amount <= 0 or self.cash < amount then return false end
-    
-    self.cash = self.cash - amount
-    if self.player and isElement(self.player) then
-        setPlayerMoney(self.player, self.cash)
-    end
-    return true
-end
-
 -- Instance method to get character data as table
 function Character:getData()
     return {
@@ -200,7 +176,11 @@ function Character.getFromPlayer(player)
     if not isElement(player) then
         return nil
     end
-    return getElementData(player, "character")
+    local character = getElementData(player, "character")
+    if character and getmetatable(character) ~= Character then
+        setmetatable(character, Character)
+    end
+    return character
 end
 
 -- Instance method to delete character
@@ -221,6 +201,52 @@ function Character:delete(callback)
             if callback then callback(false) end
         end
     end, self.id)
+end
+
+function Character:hasCash(price)
+    return self.cash >= price
+end
+
+function Character:hasBankMoney(price)
+    return self.bank >= price
+end
+
+function Character:getCash()
+    return self.cash
+end
+
+function Character:getBankMoney()
+    return self.bank
+end
+
+function Character:giveCash(amount)
+    if not amount or amount <= 0 then return false end
+    self.cash = self.cash + amount
+    if self.player and isElement(self.player) then
+        setPlayerMoney(self.player, self.cash)
+    end
+    return true
+end
+
+function Character:takeCash(amount)
+    if not amount or amount <= 0 or self.cash < amount then return false end
+    self.cash = self.cash - amount
+    if self.player and isElement(self.player) then
+        setPlayerMoney(self.player, self.cash)
+    end
+    return true
+end
+
+function Character:giveBankMoney(amount)
+    if not amount or amount <= 0 then return false end
+    self.bank = self.bank + amount
+    return true
+end
+
+function Character:takeBankMoney(amount)
+    if not amount or amount <= 0 or self.bank < amount then return false end
+    self.bank = self.bank - amount
+    return true
 end
 
 -- Initialize database when database connection is established

@@ -1,0 +1,38 @@
+services:
+  mta-server:
+    # Override for development - don't restart automatically to allow debugging
+    restart: "no"
+    # Add development tools and debugging capabilities
+    environment:
+      - MTA_DEV=true
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=mta_sa
+      - DATABASE_USER=my_user
+      - DATABASE_PASSWORD=user_password
+    # Mount the workspace for live editing
+    volumes:
+      - ..:/workspace:cached
+      - mta-logs:/opt/mta/multitheftauto_linux_x64/mods/deathmatch/logs
+    # Keep container running for development
+    command: ["/bin/bash", "-c", "tail -f /dev/null"]
+    # Add development labels
+    labels:
+      - "devcontainer.local_folder=true"
+
+  # Override database for development with initialization scripts
+  db:
+    volumes:
+      - db_data:/var/lib/mysql
+      - ../.devcontainer/db-init:/docker-entrypoint-initdb.d:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: mta_sa
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: user_password
+      # Enable general query log for debugging
+      MYSQL_ROOT_HOST: "%"
+
+volumes:
+  mta-logs:
+    driver: local

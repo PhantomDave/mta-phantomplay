@@ -1,23 +1,30 @@
-function createHouseForPlayer(thePlayer, command, price, x, y, z)
-    if not x or not y or not z then
-        x, y, z = getElementPosition(thePlayer)
-    end
+function createHouseCommand(player, commandname, price)
 
-    if not price or tonumber(price) <= 0 then
-        outputChatBox("Invalid price specified. Please provide a valid number greater than 0.", thePlayer, 255, 0, 0)
+    local account = Account.getFromPlayer(player)
+    if not account or not account:isAdmin() then
+        outputChatBox("You don't have permission to use this command.", player)
         return
     end
 
-    createHouse(x, y, z, tonumber(price), function(success)
-        if not success then
-            outputChatBox("Failed to create house. Please try again later.", thePlayer, 255, 0, 0)
-            return
+    local x, y, z = getElementPosition(player)
+
+    local numericPrice = tonumber(price)
+    if not numericPrice or numericPrice <= 0 then
+        outputChatBox("Usage: /createhouse <price>", player)
+        outputChatBox("Price must be a valid positive number.", player)
+        return
+    end
+    
+    House.createNew(x, y, z, numericPrice, function(house)
+        if house then
+            house:createVisuals()
+            table.insert(houses, house)
+            outputChatBox("House created successfully at (" .. x .. ", " .. y .. ", " .. z .. ") for $" .. price, player)
         else
-            outputChatBox("House created successfully at (" .. x .. ", " .. y .. ", " .. z .. ") for $" .. price .. ".", thePlayer, 0, 255, 0)
+            outputChatBox("Failed to create house.", player)
         end
     end)
 end
 
-
-addCommandHandler("createhouse", createHouseForPlayer)
+addCommandHandler("createhouse", createHouseCommand)
 

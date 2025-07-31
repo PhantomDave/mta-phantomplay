@@ -81,8 +81,6 @@ addEventHandler(EVENTS.GUI.CLEAR_LOGIN_WINDOW, localPlayer,
 		setAccountData(account)
 		if (wdwLogin ~= nil) then
 			guiSetVisible(wdwLogin, false)
-			showCursor(false)
-			guiSetInputEnabled(false)
 		end
 	end
 )

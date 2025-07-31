@@ -48,7 +48,6 @@ function Account.login(email, password, callback)
     local queryString = "SELECT * FROM accounts WHERE email = ? AND password = ?"
     
     queryAsync(queryString, function(result)
-        iprint(result)
         if result and #result > 0 then
             local account = Account:create(result[1])
             callback(account)
@@ -144,7 +143,11 @@ function Account.getFromPlayer(player)
     if not isElement(player) then
         return nil
     end
-    return getElementData(player, "account")
+    local accountData = getElementData(player, "account")
+    if accountData then
+        setmetatable(accountData, Account)
+    end
+    return accountData
 end
 
 addEventHandler(EVENTS.ON_DATABASE_CONNECTED, resourceRoot, Account.initializeDatabase)
