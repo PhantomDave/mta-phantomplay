@@ -29,7 +29,6 @@ end
 function Character.initializeDatabase()
     queryAsync("CREATE TABLE IF NOT EXISTS characters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT, gender VARCHAR(16), skin VARCHAR(16), cash INT(11), bank INT(11), account_id INT, FOREIGN KEY (account_id) REFERENCES accounts(id))", function(result)
         if result then
-            outputDebugString("[DEBUG] Characters table creation query executed successfully.")
             triggerEvent(EVENTS.CHARACTERS.ON_CHARACTER_DATABASE_CONNECTED, resourceRoot)
         else
             outputDebugString("[DEBUG] Characters table creation query failed.")
@@ -85,7 +84,6 @@ function Character.createNew(name, age, gender, skin, accountId, callback)
         if callback then callback(nil) end
         return
     end
-    
     local queryString = "INSERT INTO characters (name, age, gender, skin, account_id) VALUES (?, ?, ?, ?, ?)"
     insertAsync(queryString, function(result)
         if result and result > 0 then

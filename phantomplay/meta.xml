@@ -7,7 +7,7 @@
 	<script src="shared/events_constants.lua" type="shared" />
 
 	<!-- Utilities -->
-	<script src="utils.lua" type="server" />
+	<script src="utils.lua" type="shared" />
 
 	<!-- Database System -->
 	<script src="[database]/**/*.lua" type="server" />

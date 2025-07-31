@@ -83,6 +83,7 @@ local function onPlayerLoginSuccess()
     
     -- Get characters for this account
     Character.getByAccountId(account.id, function(characters)
+        print(characters)
         if characters and #characters > 0 then
             -- Player has characters, show character selection
             local characterData = {}
@@ -114,36 +115,6 @@ local function onPlayerQuit()
     end
 end
 
--- Handle character deletion from client
-local function onCharacterDeleted(characterId)
-    local player = client
-    if not player or not isElement(player) then
-        return
-    end
-    
-    -- Verify the character belongs to the player's account
-    local account = Account.getFromPlayer(player)
-    if not account then
-        return
-    end
-    
-    Character.getById(characterId, function(character)
-        if character and character.accountId == account.id then
-            character:delete(function(success)
-                if success then
-                    outputDebugString("[DEBUG] Character deleted: " .. character.name)
-                    -- Refresh character list by calling the function directly
-                    onPlayerLoginSuccess()
-                else
-                    outputDebugString("[DEBUG] Failed to delete character: " .. character.name)
-                end
-            end)
-        else
-            outputDebugString("[DEBUG] Unauthorized character deletion attempt")
-        end
-    end)
-end
-
 -- Register events
 addEvent(EVENTS.CHARACTERS.ON_CHARACTER_SELECTED, true)
 addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_SELECTED, root, onCharacterSelected)
@@ -156,6 +127,5 @@ addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, root, onCharacterDeleted
 
 -- Listen for successful account logins
 addEvent(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, true)
-addEventHandler(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, root, onPlayerLoginSuccess)
 
 addEventHandler("onPlayerQuit", root, onPlayerQuit)

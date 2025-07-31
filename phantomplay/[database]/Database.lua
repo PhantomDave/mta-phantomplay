@@ -139,26 +139,18 @@ function Database.insertAsync(queryStr, callback, ...)
     
     local params = {...}
     dbQuery(function(qh)
-        local _, numRows, errorMsg = dbPoll(qh, -1)
-        if errorMsg then
-            outputDebugString("[ERROR] Insert failed: " .. tostring(errorMsg) .. " | Query: " .. queryStr)
+        local result, num_affected_rows, last_insert_id = dbPoll ( qh, -1 )
+        if not result then
+            local error_code,error_msg = num_affected_rows,last_insert_id
+            outputDebugString("[ERROR] Insert failed: " .. tostring(error_msg) .. " | Query: " .. queryStr)
             if callback then callback(nil, 0) end
             dbFree(qh)
             return
         end
-        
-        -- Get the last insert ID
-        dbQuery(function(qh2)
-            local result2 = dbPoll(qh2, -1)
-            local insertId = nil
-            if result2 and result2[1] then
-                insertId = result2[1].id or result2[1]["LAST_INSERT_ID()"] or result2[1]["last_insert_rowid()"]
-            end
-            
-            outputDebugString("[DEBUG] Insert completed: " .. queryStr .. " (Insert ID: " .. tostring(insertId) .. ", Affected rows: " .. (numRows or 0) .. ")")
-            if callback then callback(insertId, numRows or 0) end
-            dbFree(qh2)
-        end, {}, Database.connection, "SELECT LAST_INSERT_ID() as id")
+
+        if result and callback then
+            callback(last_insert_id)
+        end
         
         dbFree(qh)
     end, {}, Database.connection, queryStr, unpack(params))
