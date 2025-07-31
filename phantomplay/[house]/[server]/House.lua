@@ -144,7 +144,10 @@ function House:createVisuals()
     setElementDimension(self.colShape, self.dimension)
 
     self.textDisplay = textCreateDisplay()
-    self.textItem = textCreateTextItem("House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. (self.owner or "N/A") .. "\n\nPress ALT to buy the house", 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
+
+    local text = self.owner == nil and "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. "Nobody" .. "\n\nPress ALT to buy the house" or "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price) .. "\nOwner: ((" .. (self.owner) .. "))\n\nPress ALT to buy the house"
+
+    self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
     textDisplayAddText(self.textDisplay, self.textItem)
 
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
@@ -152,6 +155,7 @@ function House:createVisuals()
             textDisplayAddObserver(self.textDisplay, hitElement)
             bindKey(hitElement, "lalt", "down", function()
                 iprint("Attempting to buy house with ID: " .. self.id)
+                
             end)
         end
     end)
