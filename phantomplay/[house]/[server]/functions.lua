@@ -1,6 +1,5 @@
-function buyHouseCommand(player, commandName)
+function buyHouseCommand(player, commandName, house)
 
-    local house = House.getById(tonumber(houseId))
     if not house then
         outputChatBox("House with ID " .. houseId .. " does not exist.", player)
         return
@@ -18,11 +17,7 @@ function buyHouseCommand(player, commandName)
     end
 
     -- Deduct money and set owner
-    takePlayerMoney(player, price)
     house:setOwner(player)
 
     outputChatBox("You have successfully bought the house for $" .. price, player)
 end
-
-
-addCommandHandler("buyhouse", buyHouseCommand)
