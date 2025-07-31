@@ -77,14 +77,14 @@ sudo apt-get install -y --no-install-recommends \
 
 # Wait for database to be ready
 echo "⏳ Waiting for database to be ready..."
-until mysql -h db -u my_user -puser_password -e "SELECT 1" &>/dev/null; do
+until mysql -h db -u my_user -p user_password -e "SELECT 1" &>/dev/null; do
     echo "Database not ready yet, waiting 2 seconds..."
     sleep 2
 done
 echo "✅ Database is ready!"
 
 # Create a simple database test
-mysql -h db -u my_user -puser_password mta_sa -e "
+mysql -h db -u my_user -p user_password mta_sa -e "
 CREATE TABLE IF NOT EXISTS test_connection (
     id INT AUTO_INCREMENT PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
