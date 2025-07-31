@@ -1,7 +1,7 @@
 function buyHouseCommand(player, commandName, house)
 
     if not house then
-        outputChatBox("House with ID " .. houseId .. " does not exist.", player)
+        outputChatBox("House broken ", player)
         return
     end
 
@@ -16,7 +16,6 @@ function buyHouseCommand(player, commandName, house)
         return
     end
 
-    -- Deduct money and set owner
     house:setOwner(player)
 
     outputChatBox("You have successfully bought the house for $" .. price, player)
