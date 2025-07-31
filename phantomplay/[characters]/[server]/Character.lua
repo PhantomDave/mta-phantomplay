@@ -18,8 +18,8 @@ function Character:create(data)
     instance.cash = data.cash or 5000
     instance.bank = data.bank or 0
     instance.accountId = data.account_id or nil
-    instance.player = nil -- Associated player element
-    instance.position = {x = 0, y = 0, z = 3} -- Default spawn position
+    instance.player = nil
+    instance.position = {x = 0, y = 0, z = 3}
     instance.rotation = 0
     
     return instance
