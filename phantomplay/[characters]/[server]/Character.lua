@@ -221,5 +221,21 @@ function Character:delete(callback)
     end, self.id)
 end
 
+function Character:hasCash(price)
+    return self.cash >= price
+end
+
+function Character:hasBankMoney(price)
+    return self.bank >= price
+end
+
+function Character:getCash()
+    return self.cash
+end
+
+function Character:getBankMoney()
+    return self.bank
+end
+
 -- Initialize database when database connection is established
 addEventHandler(EVENTS.ON_DATABASE_CONNECTED, root, Character.initializeDatabase)
