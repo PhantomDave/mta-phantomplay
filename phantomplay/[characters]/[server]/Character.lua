@@ -157,28 +157,6 @@ function Character:spawn(x, y, z, rotation)
     return true
 end
 
--- Instance method to add money
-function Character:addMoney(amount)
-    if not amount or amount <= 0 then return false end
-    
-    self.cash = self.cash + amount
-    if self.player and isElement(self.player) then
-        setPlayerMoney(self.player, self.cash)
-    end
-    return true
-end
-
--- Instance method to take money
-function Character:takeMoney(amount)
-    if not amount or amount <= 0 or self.cash < amount then return false end
-    
-    self.cash = self.cash - amount
-    if self.player and isElement(self.player) then
-        setPlayerMoney(self.player, self.cash)
-    end
-    return true
-end
-
 -- Instance method to get character data as table
 function Character:getData()
     return {
@@ -235,6 +213,36 @@ end
 
 function Character:getBankMoney()
     return self.bank
+end
+
+function Character:giveCash(amount)
+    if not amount or amount <= 0 then return false end
+    self.cash = self.cash + amount
+    if self.player and isElement(self.player) then
+        setPlayerMoney(self.player, self.cash)
+    end
+    return true
+end
+
+function Character:takeCash(amount)
+    if not amount or amount <= 0 or self.cash < amount then return false end
+    self.cash = self.cash - amount
+    if self.player and isElement(self.player) then
+        setPlayerMoney(self.player, self.cash)
+    end
+    return true
+end
+
+function Character:giveBankMoney(amount)
+    if not amount or amount <= 0 then return false end
+    self.bank = self.bank + amount
+    return true
+end
+
+function Character:takeBankMoney(amount)
+    if not amount or amount <= 0 or self.bank < amount then return false end
+    self.bank = self.bank - amount
+    return true
 end
 
 -- Initialize database when database connection is established
