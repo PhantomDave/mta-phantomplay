@@ -202,8 +202,7 @@ function Character.getFromPlayer(player)
 end
 
 function Character:getMoney()
-    local money, bank = {cash = self.cash, bank = self.bank}
-    return money, bank
+    return {cash = self.cash, bank = self.bank}
 end
 
 -- Instance method to delete character
