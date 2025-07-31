@@ -31,10 +31,24 @@ end
 function House.initializeDatabase()
     queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner int(11), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
         if result then
-            triggerEvent(EVENTS.HOUSES.ON_HOUSE_DATABASE_CONNECTED, resourceRoot)
+            outputDebugString("[DEBUG] House table creation query successful.")
+            House.LoadAllHouses()
         else
             outputDebugString("[DEBUG] House table creation query failed.")
         end
+    end)
+end
+
+function House.LoadAllHouses()
+    House.getAll(function(houseList)
+        houses = houseList or {}
+        
+        -- Create visuals for all houses
+        for _, house in ipairs(houses) do
+            house:createVisuals()
+        end
+        
+        outputDebugString("[DEBUG] Loaded " .. #houses .. " houses from database.")
     end)
 end
 
@@ -117,34 +131,35 @@ end
 
 -- Instance method to create visual elements
 function House:createVisuals()
-    -- Destroy existing visuals first
     self:destroyVisuals()
     
-    -- Create marker
     self.marker = createMarker(self.x, self.y, self.z + 1, "arrow", 1.5, 255, 255, 255, 150)
     setElementDimension(self.marker, self.dimension)
     setElementInterior(self.marker, self.interior)
     
-    -- Create blip
     self.blip = createBlipAttachedTo(self.marker, 31, 0, 0, 0, 0, 255, 0, 9999)
     setElementDimension(self.blip, self.dimension)
     
-    -- Create collision shape
     self.colShape = createColSphere(self.x, self.y, self.z, 1.5)
     setElementDimension(self.colShape, self.dimension)
-    
-    -- Add event handlers for interaction
+
+    self.textDisplay = textCreateDisplay()
+    self.textItem = textCreateTextItem("House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. (self.owner or "N/A") .. "\n\nPress ALT to buy the house", 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
+    textDisplayAddText(self.textDisplay, self.textItem)
+
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
         if getElementType(hitElement) == "player" then
-            bindKey(hitElement, "enter", "down", function()
-                self:onPlayerEnter(hitElement)
+            textDisplayAddObserver(self.textDisplay, hitElement)
+            bindKey(hitElement, "lalt", "down", function()
+                iprint("Attempting to buy house with ID: " .. self.id)
             end)
         end
     end)
     
     addEventHandler(EVENTS.ON_COLSHAPE_LEAVE, self.colShape, function(leaveElement)
         if getElementType(leaveElement) == "player" then
-            unbindKey(leaveElement, "enter", "down")
+            textDisplayRemoveObserver(self.textDisplay, leaveElement)
+            unbindKey(leaveElement, "lalt", "down")
         end
     end)
     

@@ -1,9 +1,6 @@
 -- Legacy functions for backward compatibility
 -- These functions now use the Account OOP class internally
 
-function initializeAccountDatabase()
-    Account.initializeDatabase()
-end
 
 function loginUser(email, password, callback)
     Account.login(email, password, function(account)
