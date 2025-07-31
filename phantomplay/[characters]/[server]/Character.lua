@@ -176,7 +176,11 @@ function Character.getFromPlayer(player)
     if not isElement(player) then
         return nil
     end
-    return getElementData(player, "character")
+    local character = getElementData(player, "character")
+    if character and getmetatable(character) ~= Character then
+        setmetatable(character, Character)
+    end
+    return character
 end
 
 -- Instance method to delete character
