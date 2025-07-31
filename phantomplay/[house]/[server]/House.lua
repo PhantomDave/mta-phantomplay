@@ -154,9 +154,7 @@ function House:createVisuals()
         if getElementType(hitElement) == "player" then
             textDisplayAddObserver(self.textDisplay, hitElement)
             bindKey(hitElement, "lalt", "down", function()
-                iprint("Attempting to buy house with ID: " .. self.id)
                 buyHouseFunction(hitElement, self)
-
             end)
         end
     end)
@@ -187,6 +185,16 @@ function House:destroyVisuals()
         destroyElement(self.colShape)
         self.colShape = nil
     end
+end
+
+function House:setOwner(character)
+    self.owner = character.id
+    self:save()
+
+    character.setBankMoney(character:getMoney().bank - self.price)
+    
+    outputDebugString("[DEBUG] House ID " .. self.id .. " ownership set to player ID " .. character.id)
+    return true
 end
 
 -- Instance method called when player enters house area

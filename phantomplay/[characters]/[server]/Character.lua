@@ -198,11 +198,46 @@ function Character.getFromPlayer(player)
     if not isElement(player) then
         return nil
     end
-    return getElementData(player, "character")
+    local character = getElementData(player, "character")
+    if character and getmetatable(character) ~= Character then
+        setmetatable(character, Character)
+    end
+    return character
+end
+
+function Character:hasMoney(money)
+    return self.cash >= money
+end
+
+function Character:hasBankMoney(money)
+    return self.bank >= money
 end
 
 function Character:getMoney()
     return {cash = self.cash, bank = self.bank}
+end
+
+function Character:setBankMoney(amount)
+    self.bank = amount
+    self:save()
+end
+
+function Character:setCash(amount)
+    self.cash = amount
+    if self.player and isElement(self.player) then
+        setPlayerMoney(self.player, self.cash)
+    end
+end
+
+function Character:giveBankMoney(amount)
+    self.bank += amount
+end
+
+function Character:giveCash(amount)
+    self.cash += amount
+    if self.player and isElement(self.player) then
+        setPlayerMoney(self.player, self.cash)
+    end
 end
 
 -- Instance method to delete character

@@ -17,8 +17,8 @@ function buyHouseFunction(player, house)
     end
 
     local price = house.price
-    if character:getMoney().bank < price and character:getMoney().cash < price then
-        outputChatBox("You do not have enough money to buy this house. Price: $" .. price .. " You have: $" .. (character:getMoney().cash + character:getMoney().bank), player)
+    if not character:hasBankMoney(price) then
+        outputChatBox("You do not have enough money to buy this house. Price: $" .. price .. " You have: $" .. (character:getMoney().bank), player)
         return
     end
 
