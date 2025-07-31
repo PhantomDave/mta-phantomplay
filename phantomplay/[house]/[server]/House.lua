@@ -74,7 +74,7 @@ end
 
 -- Static method to create new house
 function House.createNew(x, y, z, price, callback)
-    iprint(x, y, z, price)
+    outputDebugString("[DEBUG] House.createNew called with parameters: x=" .. tostring(x) .. ", y=" .. tostring(y) .. ", z=" .. tostring(z) .. ", price=" .. tostring(price))
     if not x or not y or not z or not price or tonumber(price) <= 0 then
         outputDebugString("[DEBUG] House.createNew called with invalid parameters.")
         if callback then callback(nil) end
