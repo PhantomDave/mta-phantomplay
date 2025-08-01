@@ -149,31 +149,34 @@ end
 -- Instance method to create visual elements
 function House:createVisuals()
     self:destroyVisuals()
-    
-    self.marker = createMarker(self.x, self.y, self.z + 1, "arrow", 1.5, 255, 255, 255, 150)
-    setElementDimension(self.marker, 0)
-    
-    self.blip = createBlipAttachedTo(self.marker, 31, 0, 0, 0, 0, 255, 0, 9999)
-    setElementDimension(self.blip, 0)
 
-    self.colShape = createColSphere(self.x, self.y, self.z, 1.5)
-    setElementDimension(self.colShape, 0)
+    self.pickup = Pickup(self.x, self.y, self.z, 3, 1273, 1)
+    self.pickup:setDimension(0)
+    
+    self.blip = Blip.createAttachedTo(self.pickup, 31, 0, 0, 0, 0, 255, 0, 9999)
+    self.blip:setDimension(0)
+
+    self.colShape = ColShape.Sphere(self.x, self.y, self.z, 1.5)
+    self.colShape:setDimension(0)
 
     local interior = getInteriorByID(self.interior)
     if interior then
-        self.interiorMarker = createMarker(interior.x, interior.y, interior.z + 1, "arrow", 1.5, 255, 255, 255, 150)
-        setElementDimension(self.interiorMarker, self.id)
+        self.interiorMarker = Marker(interior.x, interior.y, interior.z + 1, "arrow", 1.5, 255, 255, 255, 150)
+        self.interiorMarker:setDimension(self.id)
+        self.interiorMarker:setInterior(interior.interior)
 
-        self.interiorColShape = createColSphere(interior.x, interior.y, interior.z, 1.5)
-        setElementDimension(self.interiorColShape, self.id)
+        self.interiorColShape = ColShape.Sphere(interior.x, interior.y, interior.z, 2.0)
+        self.interiorColShape:setDimension(self.id)
+        self.interiorColShape:setInterior(interior.interior)
+        
     end
 
-    self.textDisplay = textCreateDisplay()
+    self.textDisplay = TextDisplay.create()
 
     local ownerDisplay = self.ownerName or "Nobody"
     local text = "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. ownerDisplay .. "\n\nPress ALT to buy the house"
 
-    self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
+    self.textItem = TextItem.create(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
     textDisplayAddText(self.textDisplay, self.textItem)
 
 
@@ -218,9 +221,9 @@ end
 
 -- Instance method to destroy visual elements
 function House:destroyVisuals()
-    if self.marker and isElement(self.marker) then
-        destroyElement(self.marker)
-        self.marker = nil
+    if self.pickup and isElement(self.pickup) then
+        destroyElement(self.pickup)
+        self.pickup = nil
     end
     
     if self.blip and isElement(self.blip) then
