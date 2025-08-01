@@ -21,6 +21,7 @@
       <acl name="Admin" />
       <acl name="RPC" />
       <object name="resource.admin" />
+      <object name="resource.admin2" />
       <object name="resource.webadmin" />
       <object name="resource.acpanel" />
    </group>
@@ -55,6 +56,7 @@
       <acl name="RPC" />
       <object name="resource.phantomplay" />
       <object name="resource.admin" />
+      <object name="resource.admin2" />
       <object name="resource.webadmin" />
    </group>
    <group name="PhantomPlayModerator">
@@ -67,6 +69,14 @@
       <acl name="Default" />
       <acl name="PhantomPlayPlayerACL" />
       <object name="resource.phantomplay" />
+   </group>
+   <group name="AdminResourceGroup">
+      <acl name="AdminResourceACL" />
+      <acl name="Admin" />
+      <object name="resource.admin" />
+      <object name="resource.admin2" />
+      <object name="resource.webadmin" />
+      <object name="resource.acpanel" />
    </group>
    <acl name="Default">
       <right name="general.ModifyOtherObjects" access="false" />
@@ -408,6 +418,18 @@
       <right name="function.executeCommandHandler" access="true" />
       <right name="function.aclReload" access="true" />
       <right name="function.aclSave" access="true" />
+      <right name="function.aclCreate" access="true" />
+      <right name="function.aclDestroy" access="true" />
+      <right name="function.aclSetRight" access="true" />
+      <right name="function.aclRemoveRight" access="true" />
+      <right name="function.aclCreateGroup" access="true" />
+      <right name="function.aclDestroyGroup" access="true" />
+      <right name="function.aclGroupAddACL" access="true" />
+      <right name="function.aclGroupRemoveACL" access="true" />
+      <right name="function.aclGroupAddObject" access="true" />
+      <right name="function.aclGroupRemoveObject" access="true" />
+      <right name="function.setServerConfigSetting" access="true" />
+      <right name="function.updateResourceACLRequest" access="true" />
    </acl>
    <acl name="PhantomPlayModeratorACL">
       <!-- Moderator Permissions for PhantomPlay -->
@@ -462,5 +484,54 @@
       <right name="function.phantomplay.interactWithObjects" access="true" />
       <right name="function.phantomplay.useVehicles" access="true" />
       <right name="function.phantomplay.accessUI" access="true" />
+   </acl>
+   <acl name="AdminResourceACL">
+      <!-- Full ACL Management for Admin Resources -->
+      <right name="general.ModifyOtherObjects" access="true" />
+      <right name="general.http" access="true" />
+      
+      <!-- ACL Management Functions -->
+      <right name="function.aclReload" access="true" />
+      <right name="function.aclSave" access="true" />
+      <right name="function.aclCreate" access="true" />
+      <right name="function.aclDestroy" access="true" />
+      <right name="function.aclSetRight" access="true" />
+      <right name="function.aclRemoveRight" access="true" />
+      <right name="function.aclCreateGroup" access="true" />
+      <right name="function.aclDestroyGroup" access="true" />
+      <right name="function.aclGroupAddACL" access="true" />
+      <right name="function.aclGroupRemoveACL" access="true" />
+      <right name="function.aclGroupAddObject" access="true" />
+      <right name="function.aclGroupRemoveObject" access="true" />
+      
+      <!-- Admin Commands -->
+      <right name="command.aclrequest" access="true" />
+      <right name="command.reloadacl" access="true" />
+      <right name="command.addaccount" access="true" />
+      <right name="command.delaccount" access="true" />
+      <right name="command.chgpass" access="true" />
+      
+      <!-- Account Management -->
+      <right name="function.addAccount" access="true" />
+      <right name="function.removeAccount" access="true" />
+      <right name="function.setAccountName" access="true" />
+      <right name="function.setAccountPassword" access="true" />
+      
+      <!-- Player Management -->
+      <right name="function.kickPlayer" access="true" />
+      <right name="function.banPlayer" access="true" />
+      <right name="function.setPlayerMuted" access="true" />
+      <right name="function.redirectPlayer" access="true" />
+      
+      <!-- Resource Management -->
+      <right name="function.startResource" access="true" />
+      <right name="function.stopResource" access="true" />
+      <right name="function.restartResource" access="true" />
+      <right name="function.refreshResources" access="true" />
+      
+      <!-- Server Management -->
+      <right name="function.setServerConfigSetting" access="true" />
+      <right name="function.updateResourceACLRequest" access="true" />
+      <right name="function.executeCommandHandler" access="true" />
    </acl>
 </acl>

@@ -161,6 +161,27 @@ aclList
 hasObjectPermissionTo <object> <action>
 ```
 
+## Admin Panel Access
+
+### Web Admin Panel URL:
+- **Local/Development**: `http://localhost:22005` or `http://127.0.0.1:22005`
+- **Remote Server**: `http://YOUR_SERVER_IP:22005`
+
+### Requirements:
+1. **webadmin** resource must be running (configured in mta-server.conf)
+2. Account must be in Admin or PhantomPlayAdmin group
+3. HTTP port 22005 must be accessible (check firewall settings)
+
+### Login:
+- Use your MTA account username and password
+- Account must have admin permissions in ACL
+
+### ACL Management via Web Panel:
+1. Navigate to **Resources** → **webadmin** → **ACL**
+2. Select groups and add/remove users
+3. Modify permissions as needed
+4. Apply changes and reload ACL
+
 ## Notes
 
 - Changes to ACL require server restart or `/reloadacl` command
