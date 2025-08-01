@@ -153,9 +153,15 @@ function House:createVisuals()
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
         if getElementType(hitElement) == "player" then
             textDisplayAddObserver(self.textDisplay, hitElement)
-            bindKey(hitElement, "lalt", "down", function()
-                buyHouseFunction(hitElement, self)
-            end)
+            if(self.owned) then
+                bindKey(hitElement, "enter", "down", function()
+                    buyHouseFunction(hitElement, self)
+                end)
+            else
+                bindKey(hitElement, "lalt", "down", function()
+                    buyHouseFunction(hitElement, self)
+                end)
+            end
         end
     end)
     
