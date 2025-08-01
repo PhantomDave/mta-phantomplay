@@ -56,7 +56,7 @@ end
 -- Static method to get all houses
 function House.getAll(callback)
     local query = [[
-        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, h.dimension, c.name as owner_name
+        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, c.name as owner_name
         FROM houses h
         LEFT JOIN characters c ON h.owner = c.id
     ]]
@@ -84,7 +84,7 @@ function House.getById(houseId, callback)
     end
     
     local query = [[
-        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, h.dimension, c.name as owner_name
+        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, c.name as owner_name
         FROM houses h
         LEFT JOIN characters c ON h.owner = c.id
         WHERE h.id = ?
