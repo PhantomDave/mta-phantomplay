@@ -240,12 +240,19 @@ end
 function Character:giveBankMoney(amount)
     if not amount or amount <= 0 then return false end
     self.bank = self.bank + amount
+    if self.player and isElement(self.player) then
+        triggerClientEvent(self.player, "updateBankMoney", self.player, self.bank)
+    end
+    self:save()
     return true
 end
 
 function Character:takeBankMoney(amount)
     if not amount or amount <= 0 or self.bank < amount then return false end
     self.bank = self.bank - amount
+    if self.player and isElement(self.player) then
+        triggerClientEvent(self.player, "updateBankMoney", self.player, self.bank)
+    end
     return true
 end
 

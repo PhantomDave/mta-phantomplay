@@ -22,5 +22,5 @@
         "tonumber",
         "tostring"
     ],
-    "gitdoc.enabled": false
+    "gitdoc.enabled": true
 }
