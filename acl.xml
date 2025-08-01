@@ -48,6 +48,26 @@
    <group name="DevGroup">
       <acl name="DevACL" />
    </group>
+   <group name="PhantomPlayAdmin">
+      <acl name="Default" />
+      <acl name="PhantomPlayACL" />
+      <acl name="Admin" />
+      <acl name="RPC" />
+      <object name="resource.phantomplay" />
+      <object name="resource.admin" />
+      <object name="resource.webadmin" />
+   </group>
+   <group name="PhantomPlayModerator">
+      <acl name="Default" />
+      <acl name="PhantomPlayModeratorACL" />
+      <acl name="Moderator" />
+      <object name="resource.phantomplay" />
+   </group>
+   <group name="PhantomPlayPlayer">
+      <acl name="Default" />
+      <acl name="PhantomPlayPlayerACL" />
+      <object name="resource.phantomplay" />
+   </group>
    <acl name="Default">
       <right name="general.ModifyOtherObjects" access="false" />
       <right name="general.http" access="false" />
