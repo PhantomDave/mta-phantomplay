@@ -33,6 +33,8 @@
 	<script src="[dealership]/[server]/**/*.lua" type="server" />
 	<script src="[dealership]/[client]/**/*.lua" type="client" />
 
+	<!-- Dealerships System -->
+	<script src="[servervehicles]/[server]/**/*.lua" type="server" />
 	<!-- UI System -->
 	<script src="[ui]/[client]/**/*.lua" type="client" />
 
