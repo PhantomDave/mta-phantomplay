@@ -29,7 +29,7 @@ end
 
 -- Static method to initialize database
 function House.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES characters(id), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
+    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES owner(id), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
         if result then
             outputDebugString("[DEBUG] House table creation query successful.")
             House.LoadAllHouses()
@@ -129,6 +129,19 @@ function House:save(callback)
     end, self.owner, self.x, self.y, self.z, self.price, self.id)
 end
 
+-- Instance method to get owner name
+function House:getOwnerName(callback)
+    if not self.owner then
+        callback("Nobody")
+        return
+    end
+    
+    Character.getById(self.owner, function(character)
+        local ownerName = character and character.name or "Unknown"
+        callback(ownerName)
+    end)
+end
+
 -- Instance method to create visual elements
 function House:createVisuals()
     self:destroyVisuals()
@@ -145,23 +158,19 @@ function House:createVisuals()
 
     self.textDisplay = textCreateDisplay()
 
-    local text = self.owner == nil and "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. "Nobody" .. "\n\nPress ALT to buy the house" or "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price) .. "\nOwner: ((" .. (self.owner) .. "))\n\nPress ENTER to enter the house"
-
-    self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
-    textDisplayAddText(self.textDisplay, self.textItem)
+    -- Get owner name and create text display
+    self:getOwnerName(function(ownerName)
+        local text = "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. ownerName .. "\n\nPress ALT to buy the house"
+        self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
+        textDisplayAddText(self.textDisplay, self.textItem)
+    end)
 
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
         if getElementType(hitElement) == "player" then
             textDisplayAddObserver(self.textDisplay, hitElement)
-            if(self.owned) then
-                bindKey(hitElement, "enter", "down", function()
-                    self:onPlayerEnter(hitElement)
-                end)
-            else
-                bindKey(hitElement, "lalt", "down", function()
-                    buyHouseFunction(hitElement, self)
-                end)
-            end
+            bindKey(hitElement, "lalt", "down", function()
+                buyHouseFunction(hitElement, self)
+            end)
         end
     end)
     
@@ -169,7 +178,6 @@ function House:createVisuals()
         if getElementType(leaveElement) == "player" then
             textDisplayRemoveObserver(self.textDisplay, leaveElement)
             unbindKey(leaveElement, "lalt", "down")
-            unbindKey(leaveElement, "enter", "down")
         end
     end)
     
