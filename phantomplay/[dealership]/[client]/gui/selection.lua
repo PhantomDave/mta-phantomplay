@@ -30,6 +30,19 @@ function OnSelectVehicle(button, state)
 end
 
 
+
+function clearVehicleSelectionWindow()
+    if wdwVehSelection then
+        guiSetVisible(wdwVehSelection, false)
+        showCursor(false)
+        guiSetInputEnabled(false)
+        unbindKey("F4", "up")
+    end
+end
+
+addEvent(EVENTS.GUI.CLEAR_VEHICLE_SELECTION_WINDOW, true)
+addEventHandler(EVENTS.GUI.CLEAR_VEHICLE_SELECTION_WINDOW, localPlayer, clearVehicleSelectionWindow)
+
 addEvent(EVENTS.VEHICLES.OPEN_VEHICLE_SELECTION, true)
 addEventHandler(EVENTS.VEHICLES.OPEN_VEHICLE_SELECTION, localPlayer, 
     function (vehicles)
@@ -38,6 +51,7 @@ addEventHandler(EVENTS.VEHICLES.OPEN_VEHICLE_SELECTION, localPlayer,
         end
 
         guiGridListClear(gridListVehicles)
+        bindKey("F4", "up", function() triggerEvent(EVENTS.GUI.CLEAR_VEHICLE_SELECTION_WINDOW, localPlayer) end)
 
         if vehicles and isTableNotEmpty(vehicles) then
             Vehicles = vehicles or {}
@@ -51,16 +65,5 @@ addEventHandler(EVENTS.VEHICLES.OPEN_VEHICLE_SELECTION, localPlayer,
     guiSetVisible(wdwVehSelection, true)
     showCursor(true)
         guiSetInputEnabled(true)
-    end
-)
-
-addEvent(EVENTS.GUI.CLEAR_VEHICLE_SELECTION_WINDOW, true)
-addEventHandler(EVENTS.GUI.CLEAR_VEHICLE_SELECTION_WINDOW, localPlayer,
-    function ()
-        if wdwVehSelection then
-            guiSetVisible(wdwVehSelection, false)
-            showCursor(false)
-            guiSetInputEnabled(false)
-        end
     end
 )

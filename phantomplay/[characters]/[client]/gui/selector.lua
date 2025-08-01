@@ -77,8 +77,8 @@ addEventHandler(EVENTS.GUI.CLEAR_CHARACTER_SELECTION_WINDOW, localPlayer,
     function ()
         if wdwCharSelection then
             guiSetVisible(wdwCharSelection, false)
-            showCursor(false)
-            guiSetInputEnabled(false)
         end
+        showCursor(false)
+        guiSetInputEnabled(false)
     end
 )

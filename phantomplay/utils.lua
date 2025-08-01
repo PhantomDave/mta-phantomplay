@@ -143,7 +143,10 @@ function ColorUtils.rgbToHex(r, g, b)
 end
 
 function ColorUtils.getRandomColor()
-    return math.random(0, 255), math.random(0, 255), math.random(0, 255)
+    local r = math.random(0, 255)
+    local g = math.random(0, 255)
+    local b = math.random(0, 255)
+    return string.format("%d,%d,%d", r, g, b)
 end
 
 -- Table utilities

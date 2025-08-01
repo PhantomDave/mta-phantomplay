@@ -198,7 +198,7 @@ function House:createVisuals()
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
         if getElementType(hitElement) == "player" then
             textDisplayAddObserver(self.textDisplay, hitElement)
-            bindKey(hitElement, "lalt", "down", function()
+            bindKey(hitElement, "lalt", "up", function()
                 textDisplayRemoveObserver(self.textDisplay, hitElement)
                 buyHouseFunction(hitElement, self)
                 textDisplayAddObserver(self.textDisplay, hitElement)
@@ -212,7 +212,7 @@ function House:createVisuals()
     addEventHandler(EVENTS.ON_COLSHAPE_LEAVE, self.colShape, function(leaveElement)
         if getElementType(leaveElement) == "player" then
             textDisplayRemoveObserver(self.textDisplay, leaveElement)
-            unbindKey(leaveElement, "lalt", "down")
+            unbindKey(leaveElement, "lalt", "up")
             unbindKey(leaveElement, "enter", "up")
         end
     end)

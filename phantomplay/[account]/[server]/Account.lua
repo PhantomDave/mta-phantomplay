@@ -77,7 +77,7 @@ function Account.register(email, username, password, callback)
         if callback then callback(false) end
         return
     end
-    
+    iprint("[DEBUG] Email: %s, Username: %s", email, username)
     local queryString = "INSERT INTO accounts (email, username, password) VALUES (?, ?, ?)"
     queryAsync(queryString, function(result)
         if result then

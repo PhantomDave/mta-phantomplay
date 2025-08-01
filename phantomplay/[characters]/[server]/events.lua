@@ -45,8 +45,6 @@ local function onCharacterCreated(characterData)
         account.id,
         function(character)
             if character then
-                outputDebugString("[DEBUG] Character created successfully: " .. character.name)
-                
                 -- Notify client of successful creation
                 triggerClientEvent(player, EVENTS.CHARACTERS.ON_CHARACTER_CREATION_COMPLETED, player, character:getData())
                 
@@ -118,8 +116,8 @@ addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_SELECTED, root, onCharacterSelect
 addEvent(EVENTS.CHARACTERS.ON_CHARACTER_CREATED, true)
 addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_CREATED, root, onCharacterCreated)
 
-addEvent(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, true)
-addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, root, onCharacterDeleted)
+--addEvent(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, true)
+--addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, root, onCharacterDeleted)
 
 addEvent(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, true)
 
