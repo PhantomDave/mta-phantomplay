@@ -12,6 +12,7 @@ function House:create(data)
     -- Initialize properties
     instance.id = data.id or nil
     instance.owner = data.owner or nil
+    instance.ownerName = data.owner_name or nil  -- New field for owner name from JOIN
     instance.x = data.x or 0
     instance.y = data.y or 0
     instance.z = data.z or 0
@@ -29,7 +30,7 @@ end
 
 -- Static method to initialize database
 function House.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES owner(id), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
+    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES characters(id), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
         if result then
             outputDebugString("[DEBUG] House table creation query successful.")
             House.LoadAllHouses()
@@ -54,7 +55,13 @@ end
 
 -- Static method to get all houses
 function House.getAll(callback)
-    queryAsync("SELECT * FROM houses", function(result)
+    local query = [[
+        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, h.dimension, c.name as owner_name
+        FROM houses h
+        LEFT JOIN characters c ON h.owner = c.id
+    ]]
+    
+    queryAsync(query, function(result)
         if result and #result > 0 then
             local houses = {}
             for _, houseData in ipairs(result) do
@@ -76,7 +83,14 @@ function House.getById(houseId, callback)
         return
     end
     
-    queryAsync("SELECT * FROM houses WHERE id = ?", function(result)
+    local query = [[
+        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, h.dimension, c.name as owner_name
+        FROM houses h
+        LEFT JOIN characters c ON h.owner = c.id
+        WHERE h.id = ?
+    ]]
+    
+    queryAsync(query, function(result)
         if result and result[1] then
             local house = House:create(result[1])
             callback(house)
@@ -129,19 +143,6 @@ function House:save(callback)
     end, self.owner, self.x, self.y, self.z, self.price, self.id)
 end
 
--- Instance method to get owner name
-function House:getOwnerName(callback)
-    if not self.owner then
-        callback("Nobody")
-        return
-    end
-    
-    Character.getById(self.owner, function(character)
-        local ownerName = character and character.name or "Unknown"
-        callback(ownerName)
-    end)
-end
-
 -- Instance method to create visual elements
 function House:createVisuals()
     self:destroyVisuals()
@@ -158,12 +159,12 @@ function House:createVisuals()
 
     self.textDisplay = textCreateDisplay()
 
-    -- Get owner name and create text display
-    self:getOwnerName(function(ownerName)
-        local text = "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. ownerName .. "\n\nPress ALT to buy the house"
-        self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
-        textDisplayAddText(self.textDisplay, self.textItem)
-    end)
+    -- Use ownerName from JOIN query, or "Nobody" if no owner
+    local ownerDisplay = self.ownerName or "Nobody"
+    local text = "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. ownerDisplay .. "\n\nPress ALT to buy the house"
+
+    self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
+    textDisplayAddText(self.textDisplay, self.textItem)
 
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
         if getElementType(hitElement) == "player" then
@@ -207,6 +208,7 @@ function House:setOwner(character)
     character:takeBankMoney(self.price)
     
     self.owner = character.id
+    self.ownerName = character.name  -- Set the owner name directly
     self:save()
     self:createVisuals()
     outputDebugString("[DEBUG] House ID " .. self.id .. " ownership set to player ID " .. character.id)
@@ -239,20 +241,22 @@ function House:sellTo(player, callback)
     end
     
     -- Take money from character
-    character:takeMoney(self.price)
+    character:takeCash(self.price)
     
     -- Set owner
     self.owner = character.id
+    self.ownerName = character.name  -- Set the owner name directly
     
     -- Save house
     self:save(function(success)
         if success then
             outputChatBox("Congratulations! You bought the house for $" .. self.price, player)
             character:save() -- Save character money
+            self:createVisuals() -- Recreate visuals with new owner name
             if callback then callback(true) end
         else
             -- Refund money if save failed
-            character:addMoney(self.price)
+            character:giveCash(self.price)
             outputChatBox("Failed to purchase house. Money refunded.", player)
             if callback then callback(false) end
         end
@@ -269,6 +273,7 @@ function House:getData()
     return {
         id = self.id,
         owner = self.owner,
+        ownerName = self.ownerName,
         x = self.x,
         y = self.y,
         z = self.z,
