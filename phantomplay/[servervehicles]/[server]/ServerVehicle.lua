@@ -147,11 +147,33 @@ function ServerVehicle.LoadAllVehicles()
 
         -- Create visuals for all vehicles
         for _, vehicleData in ipairs(vehicles) do
-            ServerVehicle:new(vehicleData)
+            local veh = ServerVehicle:new(vehicleData)
+            veh:attachEventHandlers()
         end
 
         outputDebugString("[DEBUG] Loaded " .. #vehicles .. " vehicles from database.")
     end)
+end
+
+function ServerVehicle:attachEventHandlers()
+    -- Attach any necessary event handlers for the vehicle instance
+    addEventHandler("onVehicleStart", self.vehicle, function()
+        outputDebugString("[DEBUG] Vehicle started: " .. tostring(self.alias))
+    end)
+
+    addEventHandler("onVehicleStop", self.vehicle, function()
+        outputDebugString("[DEBUG] Vehicle stopped: " .. tostring(self.alias))
+    end)
+
+    addEventHandler("onVehicleEnter", self.vehicle, function()
+        self.vehicle:setEngineState(self.isEngineOn)
+    end)
+
+    addEventHandler("onVehicleExit", self.vehicle, function()
+        self.vehicle:setEngineState(self.isEngineOn)
+    end)
+
+    -- Add more event handlers as needed
 end
 
 
@@ -182,8 +204,6 @@ function ServerVehicle:new(vehicleData)
     instance.vehicle:setLocked(instance.isLocked)
     instance.vehicle:spawn(instance.position.x, instance.position.y, instance.position.z, 
                            instance.rotation.x, instance.rotation.y, instance.rotation.z)
-
-    
     
     return instance
 end
