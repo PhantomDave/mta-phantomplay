@@ -29,6 +29,8 @@
 	<!-- Admin System -->
 	<script src="[admin]/[server]/**/*.lua" type="server" />
 
+	<script src="[ui]/[client]/**/*.lua" type="client" />
+
 	<settings>
 		<!-- MySQL Configuration -->
 		<setting name="dbtype" value="mysql"/>
