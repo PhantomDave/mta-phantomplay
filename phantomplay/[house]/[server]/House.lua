@@ -29,7 +29,7 @@ end
 
 -- Static method to initialize database
 function House.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner int(11), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
+    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES characters(id), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
         if result then
             outputDebugString("[DEBUG] House table creation query successful.")
             House.LoadAllHouses()
@@ -188,11 +188,12 @@ function House:destroyVisuals()
 end
 
 function House:setOwner(character)
+    
+    character:takeBankMoney(self.price)
+    
     self.owner = character.id
     self:save()
-
-    character.setBankMoney(character:getMoney().bank - self.price)
-    
+    self:createVisuals()
     outputDebugString("[DEBUG] House ID " .. self.id .. " ownership set to player ID " .. character.id)
     return true
 end

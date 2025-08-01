@@ -26,7 +26,9 @@
         "redhat.vscode-yaml",
         "ms-vscode.vscode-xml",
         "streetsidesoftware.code-spell-checker",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "shyykoserhiy.git-autoconfig",
+        "subtixx.mtasa-lua"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh",
