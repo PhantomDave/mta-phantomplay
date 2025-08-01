@@ -20,9 +20,16 @@ EVENTS = {
         OPEN_CHARACTER_CREATION = "openCharacterCreation",
         ON_CHARACTER_CREATION_COMPLETED = "onCharacterCreationCompleted",
     },
+    VEHICLES = {
+        OPEN_VEHICLE_SELECTION = "openVehicleSelection",
+        ON_VEHICLE_SELECTED = "onVehicleSelected",
+        ON_VEHICLE_PURCHASED = "onVehiclePurchased",
+        ON_VEHICLE_SOLD = "onVehicleSold",
+    },
     GUI = {
         ON_GUI_CLICK = "onClientGUIClick",
         CLEAR_LOGIN_WINDOW = "clearLoginWindow",
         CLEAR_CHARACTER_SELECTION_WINDOW = "clearCharacterSelectionWindow",
+        CLEAR_VEHICLE_SELECTION_WINDOW = "clearVehicleSelectionWindow",
     }
 }

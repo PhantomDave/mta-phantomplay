@@ -29,6 +29,11 @@
 	<!-- Admin System -->
 	<script src="[admin]/[server]/**/*.lua" type="server" />
 
+	<!-- Dealerships System -->
+	<script src="[dealership]/[server]/**/*.lua" type="server" />
+	<script src="[dealership]/[client]/**/*.lua" type="client" />
+
+	<!-- UI System -->
 	<script src="[ui]/[client]/**/*.lua" type="client" />
 
 	<settings>

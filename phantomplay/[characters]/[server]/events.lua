@@ -1,6 +1,3 @@
--- Character events using Character OOP class
-
--- Handle character selection from client
 local function onCharacterSelected(characterId)
     local player = client
     if not player or not isElement(player) then
@@ -124,7 +121,6 @@ addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_CREATED, root, onCharacterCreated
 addEvent(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, true)
 addEventHandler(EVENTS.CHARACTERS.ON_CHARACTER_DELETED, root, onCharacterDeleted)
 
--- Listen for successful account logins
 addEvent(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, true)
 
 addEventHandler("onPlayerQuit", root, onPlayerQuit)

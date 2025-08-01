@@ -219,8 +219,6 @@ function House:createVisuals()
             unbindKey(leaveElement, "enter", "up")
         end
     end)
-    
-    outputDebugString("[DEBUG] House visuals created for ID: " .. self.id)
 end
 
 -- Instance method to destroy visual elements
