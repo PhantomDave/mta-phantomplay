@@ -13,7 +13,7 @@ local function onCharacterSelected(characterId)
             character:setPlayer(player)
             
             -- Spawn the character
-            character:spawn()
+            character:spawn(126.7494430542, 1105.8229980469, 14)
             
             outputDebugString("[DEBUG] Character " .. character.name .. " selected and spawned for player " .. getPlayerName(player))
             
@@ -55,7 +55,7 @@ local function onCharacterCreated(characterData)
                 
                 -- Automatically spawn the new character
                 character:setPlayer(player)
-                character:spawn()
+                character:spawn(126.7494430542, 1105.8229980469, 14)
                 
                 -- Clear character creation window
                 triggerClientEvent(player, EVENTS.GUI.CLEAR_CHARACTER_SELECTION_WINDOW, player)

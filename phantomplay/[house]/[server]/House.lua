@@ -112,7 +112,7 @@ function House.createNew(x, y, z, price, callback)
     outputDebugString("[DEBUG] Attempting to create house at (" .. x .. ", " .. y .. ", " .. z .. ") with price $" .. price .. ".")
     local query = "INSERT INTO houses (x, y, z, price, interior) VALUES (?, ?, ?, ?, ?)"
     
-    local randomInterior = interiorModule.getRandomInterior()
+    local randomInterior = getRandomInterior()
     local interiorId = randomInterior and randomInterior.id or 1 -- Default to interior ID 1 if random fails
     
     insertAsync(query, function(insertId)
@@ -150,11 +150,15 @@ end
 function House:createVisuals()
     self:destroyVisuals()
 
-    self.pickup = Pickup(self.x, self.y, self.z, 3, 1273, 1)
+    local pickupId = self.owner and 1272 or 1273
+    self.pickup = Pickup(self.x, self.y, self.z, 3, pickupId, 1)
     self.pickup:setDimension(0)
     
     self.blip = Blip.createAttachedTo(self.pickup, 31, 0, 0, 0, 0, 255, 0, 9999)
     self.blip:setDimension(0)
+    self.blip:setVisibleDistance(200)
+    local icon = self.owner and 32 or 31
+    self.blip:setIcon(icon)
 
     self.colShape = ColShape.Sphere(self.x, self.y, self.z, 1.5)
     self.colShape:setDimension(0)
