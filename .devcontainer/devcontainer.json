@@ -1,8 +1,8 @@
 {
   "name": "MTA PhantomPlay Development",
-  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.override.yml"],
+  "dockerComposeFile": ["../docker-compose.yml"],
   "service": "mta-server",
-  "workspaceFolder": "/workspace",
+  "workspaceFolder": "/opt/mta/mta-phantomplay",
   "shutdownAction": "stopCompose",
 
   "features": {
@@ -30,10 +30,8 @@
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh",
-        "terminal.integrated.cwd": "/workspace",
-        "Lua.workspace.library": [
-          "/opt/mta/mods/deathmatch/resources"
-        ],
+        "terminal.integrated.cwd": "/opt/mta/mta-phantomplay",
+        "Lua.workspace.library": ["/opt/mta/mta-phantomplay"],
         "Lua.diagnostics.globals": [
           "addEvent",
           "addEventHandler",
@@ -87,10 +85,7 @@
     }
   },
 
-  "postCreateCommand": "bash -c 'if [ -f /workspace/.devcontainer/setup.sh ]; then bash /workspace/.devcontainer/setup.sh; else echo \"Setup script not found, running basic setup...\"; sudo apt-get update && sudo apt-get install -y vim nano htop curl mysql-client; fi'",
-  "postStartCommand": "bash -c 'if [ -f /workspace/.devcontainer/post-start.sh ]; then bash /workspace/.devcontainer/post-start.sh; fi'",
-
-  "remoteUser": "mtauser",
+  "remoteUser": "root",
   "containerEnv": {
     "MTA_DEV": "true",
     "DATABASE_HOST": "db",
@@ -98,5 +93,11 @@
     "DATABASE_NAME": "mta_sa",
     "DATABASE_USER": "my_user",
     "DATABASE_PASSWORD": "user_password"
-  }
+  },
+
+  "postAttachCommand": [
+    "/bin/bash",
+    "-c",
+    "cd /opt/mta/multitheftauto_linux_x64 && rm -rf mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay mods/deathmatch/resources/[gamemodes]/[guieditor]/guieditor && mkdir -p mods/deathmatch/resources/[gamemodes]/[phantomplay] mods/deathmatch/resources/[gamemodes]/[guieditor] && ln -sf /opt/mta/mta-phantomplay/phantomplay mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay && ln -sf /opt/mta/mta-phantomplay/guieditor mods/deathmatch/resources/[gamemodes]/[guieditor]/guieditor && chown -h mtauser:mtauser mods/deathmatch/resources/[gamemodes]/[phantomplay]/phantomplay mods/deathmatch/resources/[gamemodes]/[guieditor]/guieditor && echo 'Successfully created symlinks for phantomplay and guieditor resources'"
+  ]
 }
