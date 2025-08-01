@@ -29,6 +29,15 @@
 	<!-- Admin System -->
 	<script src="[admin]/[server]/**/*.lua" type="server" />
 
+	<!-- Dealerships System -->
+	<script src="[dealership]/[server]/**/*.lua" type="server" />
+	<script src="[dealership]/[client]/**/*.lua" type="client" />
+
+	<!-- Dealerships System -->
+	<script src="[servervehicles]/[server]/**/*.lua" type="server" />
+	<!-- UI System -->
+	<script src="[ui]/[client]/**/*.lua" type="client" />
+
 	<settings>
 		<!-- MySQL Configuration -->
 		<setting name="dbtype" value="mysql"/>

@@ -11,7 +11,6 @@ function buyHouseFunction(player, house)
     end
 
     local character = Character.getFromPlayer(player)
-    iprint(character)
     if not character then
         return
     end
@@ -22,7 +21,7 @@ function buyHouseFunction(player, house)
         return
     end
 
-    house:setOwner(player)
+    house:setOwner(character)
 
     outputChatBox("You have successfully bought the house for $" .. price, player)
 end

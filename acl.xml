@@ -21,6 +21,7 @@
       <acl name="Admin" />
       <acl name="RPC" />
       <object name="resource.admin" />
+      <object name="resource.admin2" />
       <object name="resource.webadmin" />
       <object name="resource.acpanel" />
    </group>
@@ -47,6 +48,35 @@
    </group>
    <group name="DevGroup">
       <acl name="DevACL" />
+   </group>
+   <group name="PhantomPlayAdmin">
+      <acl name="Default" />
+      <acl name="PhantomPlayACL" />
+      <acl name="Admin" />
+      <acl name="RPC" />
+      <object name="resource.phantomplay" />
+      <object name="resource.admin" />
+      <object name="resource.admin2" />
+      <object name="resource.webadmin" />
+   </group>
+   <group name="PhantomPlayModerator">
+      <acl name="Default" />
+      <acl name="PhantomPlayModeratorACL" />
+      <acl name="Moderator" />
+      <object name="resource.phantomplay" />
+   </group>
+   <group name="PhantomPlayPlayer">
+      <acl name="Default" />
+      <acl name="PhantomPlayPlayerACL" />
+      <object name="resource.phantomplay" />
+   </group>
+   <group name="AdminResourceGroup">
+      <acl name="AdminResourceACL" />
+      <acl name="Admin" />
+      <object name="resource.admin" />
+      <object name="resource.admin2" />
+      <object name="resource.webadmin" />
+      <object name="resource.acpanel" />
    </group>
    <acl name="Default">
       <right name="general.ModifyOtherObjects" access="false" />
@@ -233,6 +263,21 @@
       <right name="function.shutdown" access="true" />
       <right name="function.setPlayerScriptDebugLevel" access="true" />
       <right name="function.removeAccount" access="true" />
+      <right name="function.xmlLoadFile" access="true" />
+      <right name="function.xmlCreateFile" access="true" />
+      <right name="function.xmlSaveFile" access="true" />
+      <right name="function.fileOpen" access="true" />
+      <right name="function.fileCreate" access="true" />
+      <right name="function.fileWrite" access="true" />
+      <right name="function.fileClose" access="true" />
+      <right name="function.fileDelete" access="true" />
+      <right name="function.fileRename" access="true" />
+      <right name="function.fileCopy" access="true" />
+      <right name="function.dbConnect" access="true" />
+      <right name="function.dbQuery" access="true" />
+      <right name="function.dbExec" access="true" />
+      <right name="function.dbPoll" access="true" />
+      <right name="function.dbFree" access="true" />
    </acl>
    <acl name="RPC">
       <right name="function.callRemote" access="true" />
@@ -265,5 +310,228 @@
    <acl name="DevACL">
         <right name="resource.performancebrowser.http" access="true"></right>
         <right name="resource.ajax.http" access="true"></right>
+   </acl>
+   <acl name="PhantomPlayACL">
+      <!-- Full Admin Permissions for PhantomPlay -->
+      <right name="general.ModifyOtherObjects" access="true" />
+      <right name="general.http" access="true" />
+      
+      <!-- Resource Management -->
+      <right name="function.startResource" access="true" />
+      <right name="function.stopResource" access="true" />
+      <right name="function.restartResource" access="true" />
+      <right name="function.createResource" access="true" />
+      <right name="function.copyResource" access="true" />
+      <right name="function.refreshResources" access="true" />
+      
+      <!-- Player Management -->
+      <right name="function.kickPlayer" access="true" />
+      <right name="function.banPlayer" access="true" />
+      <right name="function.setPlayerMuted" access="true" />
+      <right name="function.redirectPlayer" access="true" />
+      
+      <!-- Account Management -->
+      <right name="function.addAccount" access="true" />
+      <right name="function.removeAccount" access="true" />
+      <right name="function.setAccountName" access="true" />
+      <right name="function.setAccountPassword" access="true" />
+      
+      <!-- Database Access -->
+      <right name="function.dbConnect" access="true" />
+      <right name="function.dbQuery" access="true" />
+      <right name="function.dbExec" access="true" />
+      <right name="function.dbPoll" access="true" />
+      <right name="function.dbFree" access="true" />
+      
+      <!-- File Operations -->
+      <right name="function.xmlLoadFile" access="true" />
+      <right name="function.xmlCreateFile" access="true" />
+      <right name="function.xmlSaveFile" access="true" />
+      <right name="function.fileOpen" access="true" />
+      <right name="function.fileCreate" access="true" />
+      <right name="function.fileWrite" access="true" />
+      <right name="function.fileClose" access="true" />
+      <right name="function.fileDelete" access="true" />
+      <right name="function.fileRename" access="true" />
+      <right name="function.fileCopy" access="true" />
+      
+      <!-- PhantomPlay Specific Commands -->
+      <right name="command.setadmin" access="true" />
+      <right name="command.goto" access="true" />
+      <right name="command.gethere" access="true" />
+      <right name="command.freeze" access="true" />
+      <right name="command.unfreeze" access="true" />
+      <right name="command.setmoney" access="true" />
+      <right name="command.givemoney" access="true" />
+      <right name="command.sethp" access="true" />
+      <right name="command.setarmour" access="true" />
+      <right name="command.giveweapon" access="true" />
+      <right name="command.takeweapon" access="true" />
+      <right name="command.createvehicle" access="true" />
+      <right name="command.destroyvehicle" access="true" />
+      <right name="command.repair" access="true" />
+      <right name="command.settime" access="true" />
+      <right name="command.setweather" access="true" />
+      <right name="command.setgravity" access="true" />
+      <right name="command.setgamespeed" access="true" />
+      <right name="command.setwantedlevel" access="true" />
+      <right name="command.setteam" access="true" />
+      <right name="command.setname" access="true" />
+      <right name="command.setskin" access="true" />
+      <right name="command.setinterior" access="true" />
+      <right name="command.setdimension" access="true" />
+      <right name="command.jetpack" access="true" />
+      <right name="command.invisible" access="true" />
+      <right name="command.noclip" access="true" />
+      <right name="command.god" access="true" />
+      <right name="command.adminannounce" access="true" />
+      <right name="command.asay" access="true" />
+      <right name="command.warn" access="true" />
+      <right name="command.jail" access="true" />
+      <right name="command.unjail" access="true" />
+      <right name="command.mute" access="true" />
+      <right name="command.unmute" access="true" />
+      <right name="command.kick" access="true" />
+      <right name="command.ban" access="true" />
+      <right name="command.unban" access="true" />
+      <right name="command.reloadacl" access="true" />
+      <right name="command.restart" access="true" />
+      <right name="command.start" access="true" />
+      <right name="command.stop" access="true" />
+      
+      <!-- PhantomPlay Specific Functions -->
+      <right name="function.phantomplay.setPlayerMoney" access="true" />
+      <right name="function.phantomplay.givePlayerMoney" access="true" />
+      <right name="function.phantomplay.setPlayerAdminLevel" access="true" />
+      <right name="function.phantomplay.teleportPlayer" access="true" />
+      <right name="function.phantomplay.freezePlayer" access="true" />
+      <right name="function.phantomplay.createPlayerVehicle" access="true" />
+      <right name="function.phantomplay.managePlayerCharacters" access="true" />
+      <right name="function.phantomplay.managePlayerAccounts" access="true" />
+      <right name="function.phantomplay.accessDatabase" access="true" />
+      <right name="function.phantomplay.manageHouses" access="true" />
+      <right name="function.phantomplay.systemConfiguration" access="true" />
+      
+      <!-- Advanced Admin Functions -->
+      <right name="function.callRemote" access="true" />
+      <right name="function.fetchRemote" access="true" />
+      <right name="function.executeCommandHandler" access="true" />
+      <right name="function.aclReload" access="true" />
+      <right name="function.aclSave" access="true" />
+      <right name="function.aclCreate" access="true" />
+      <right name="function.aclDestroy" access="true" />
+      <right name="function.aclSetRight" access="true" />
+      <right name="function.aclRemoveRight" access="true" />
+      <right name="function.aclCreateGroup" access="true" />
+      <right name="function.aclDestroyGroup" access="true" />
+      <right name="function.aclGroupAddACL" access="true" />
+      <right name="function.aclGroupRemoveACL" access="true" />
+      <right name="function.aclGroupAddObject" access="true" />
+      <right name="function.aclGroupRemoveObject" access="true" />
+      <right name="function.setServerConfigSetting" access="true" />
+      <right name="function.updateResourceACLRequest" access="true" />
+   </acl>
+   <acl name="PhantomPlayModeratorACL">
+      <!-- Moderator Permissions for PhantomPlay -->
+      <right name="general.ModifyOtherObjects" access="false" />
+      
+      <!-- Basic Player Management -->
+      <right name="function.kickPlayer" access="true" />
+      <right name="function.setPlayerMuted" access="true" />
+      
+      <!-- Moderator Commands -->
+      <right name="command.goto" access="true" />
+      <right name="command.gethere" access="true" />
+      <right name="command.freeze" access="true" />
+      <right name="command.unfreeze" access="true" />
+      <right name="command.sethp" access="true" />
+      <right name="command.repair" access="true" />
+      <right name="command.warn" access="true" />
+      <right name="command.msay" access="true" />
+      
+      <!-- Limited PhantomPlay Functions -->
+      <right name="function.phantomplay.teleportPlayer" access="true" />
+      <right name="function.phantomplay.freezePlayer" access="true" />
+      <right name="function.phantomplay.basicPlayerManagement" access="true" />
+   </acl>
+   <acl name="PhantomPlayPlayerACL">
+      <!-- Player Permissions for PhantomPlay -->
+      <right name="general.ModifyOtherObjects" access="false" />
+      
+      <!-- Basic Player Commands -->
+      <right name="command.me" access="true" />
+      <right name="command.do" access="true" />
+      <right name="command.pm" access="true" />
+      <right name="command.report" access="true" />
+      <right name="command.stats" access="true" />
+      <right name="command.time" access="true" />
+      <right name="command.help" access="true" />
+      <right name="command.rules" access="true" />
+      <right name="command.changepassword" access="true" />
+      <right name="command.quitcharacter" access="true" />
+      <right name="command.createcharacter" access="true" />
+      <right name="command.deletecharacter" access="true" />
+      
+      <!-- PhantomPlay Player Functions -->
+      <right name="function.phantomplay.createCharacter" access="true" />
+      <right name="function.phantomplay.selectCharacter" access="true" />
+      <right name="function.phantomplay.deleteCharacter" access="true" />
+      <right name="function.phantomplay.saveCharacter" access="true" />
+      <right name="function.phantomplay.loadCharacter" access="true" />
+      <right name="function.phantomplay.changePassword" access="true" />
+      <right name="function.phantomplay.viewStats" access="true" />
+      <right name="function.phantomplay.useChat" access="true" />
+      <right name="function.phantomplay.interactWithObjects" access="true" />
+      <right name="function.phantomplay.useVehicles" access="true" />
+      <right name="function.phantomplay.accessUI" access="true" />
+   </acl>
+   <acl name="AdminResourceACL">
+      <!-- Full ACL Management for Admin Resources -->
+      <right name="general.ModifyOtherObjects" access="true" />
+      <right name="general.http" access="true" />
+      
+      <!-- ACL Management Functions -->
+      <right name="function.aclReload" access="true" />
+      <right name="function.aclSave" access="true" />
+      <right name="function.aclCreate" access="true" />
+      <right name="function.aclDestroy" access="true" />
+      <right name="function.aclSetRight" access="true" />
+      <right name="function.aclRemoveRight" access="true" />
+      <right name="function.aclCreateGroup" access="true" />
+      <right name="function.aclDestroyGroup" access="true" />
+      <right name="function.aclGroupAddACL" access="true" />
+      <right name="function.aclGroupRemoveACL" access="true" />
+      <right name="function.aclGroupAddObject" access="true" />
+      <right name="function.aclGroupRemoveObject" access="true" />
+      
+      <!-- Admin Commands -->
+      <right name="command.aclrequest" access="true" />
+      <right name="command.reloadacl" access="true" />
+      <right name="command.addaccount" access="true" />
+      <right name="command.delaccount" access="true" />
+      <right name="command.chgpass" access="true" />
+      
+      <!-- Account Management -->
+      <right name="function.addAccount" access="true" />
+      <right name="function.removeAccount" access="true" />
+      <right name="function.setAccountName" access="true" />
+      <right name="function.setAccountPassword" access="true" />
+      
+      <!-- Player Management -->
+      <right name="function.kickPlayer" access="true" />
+      <right name="function.banPlayer" access="true" />
+      <right name="function.setPlayerMuted" access="true" />
+      <right name="function.redirectPlayer" access="true" />
+      
+      <!-- Resource Management -->
+      <right name="function.startResource" access="true" />
+      <right name="function.stopResource" access="true" />
+      <right name="function.restartResource" access="true" />
+      <right name="function.refreshResources" access="true" />
+      
+      <!-- Server Management -->
+      <right name="function.setServerConfigSetting" access="true" />
+      <right name="function.updateResourceACLRequest" access="true" />
+      <right name="function.executeCommandHandler" access="true" />
    </acl>
 </acl>

@@ -129,6 +129,10 @@ function Account:isAdmin()
     return self.adminLevel > 0
 end
 
+function Account:getAdminLevel()
+    return self.adminLevel
+end
+
 function Account:getData()
     return {
         id = self.id,

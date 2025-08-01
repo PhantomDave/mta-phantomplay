@@ -1,6 +1,3 @@
--- House class using MTA OOP system
--- Based on https://wiki.multitheftauto.com/wiki/OOP_Introduction
-
 House = {}
 House.__index = House
 
@@ -9,15 +6,16 @@ function House:create(data)
     local instance = {}
     setmetatable(instance, House)
     
-    -- Initialize properties
+    -- Initialize properties with safety checks
     instance.id = data.id or nil
     instance.owner = data.owner or nil
-    instance.x = data.x or 0
-    instance.y = data.y or 0
-    instance.z = data.z or 0
-    instance.price = data.price or 50000
-    instance.interior = data.interior or 0
-    instance.dimension = data.dimension or 0
+    instance.ownerName = data.owner_name or nil  -- New field for owner name from JOIN
+    instance.x = tonumber(data.x) or 0
+    instance.y = tonumber(data.y) or 0
+    instance.z = tonumber(data.z) or 0
+    instance.price = tonumber(data.price) or 50000  -- Ensure price is always a number
+    instance.interior = tonumber(data.interior) or 0
+    instance.dimension = tonumber(data.dimension) or 0
     
     -- Visual elements
     instance.marker = nil
@@ -29,7 +27,7 @@ end
 
 -- Static method to initialize database
 function House.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner int(11), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
+    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES characters(id), x FLOAT NOT NULL, y FLOAT NOT NULL, z FLOAT NOT NULL, price INT NOT NULL DEFAULT 50000, interior INT NOT NULL DEFAULT 0)", function(result)
         if result then
             outputDebugString("[DEBUG] House table creation query successful.")
             House.LoadAllHouses()
@@ -54,7 +52,13 @@ end
 
 -- Static method to get all houses
 function House.getAll(callback)
-    queryAsync("SELECT * FROM houses", function(result)
+    local query = [[
+        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, c.name as owner_name
+        FROM houses h
+        LEFT JOIN characters c ON h.owner = c.id
+    ]]
+    
+    queryAsync(query, function(result)
         if result and #result > 0 then
             local houses = {}
             for _, houseData in ipairs(result) do
@@ -76,7 +80,14 @@ function House.getById(houseId, callback)
         return
     end
     
-    queryAsync("SELECT * FROM houses WHERE id = ?", function(result)
+    local query = [[
+        SELECT h.id, h.owner, h.x, h.y, h.z, h.price, h.interior, c.name as owner_name
+        FROM houses h
+        LEFT JOIN characters c ON h.owner = c.id
+        WHERE h.id = ?
+    ]]
+    
+    queryAsync(query, function(result)
         if result and result[1] then
             local house = House:create(result[1])
             callback(house)
@@ -96,7 +107,10 @@ function House.createNew(x, y, z, price, callback)
     end
     
     outputDebugString("[DEBUG] Attempting to create house at (" .. x .. ", " .. y .. ", " .. z .. ") with price $" .. price .. ".")
-    local query = "INSERT INTO houses (x, y, z, price) VALUES (?, ?, ?, ?)"
+    local query = "INSERT INTO houses (x, y, z, price, interior) VALUES (?, ?, ?, ?, ?)"
+    
+    local randomInterior = getRandomInterior()
+    local interiorId = randomInterior and randomInterior.id or 1 -- Default to interior ID 1 if random fails
     
     insertAsync(query, function(insertId)
         if insertId and insertId > 0 then
@@ -106,7 +120,7 @@ function House.createNew(x, y, z, price, callback)
             outputDebugString("[DEBUG] Failed to create house.")
             if callback then callback(nil) end
         end
-    end, x, y, z, price)
+    end, x, y, z, price, interiorId)
 end
 
 -- Instance method to save house data
@@ -132,29 +146,65 @@ end
 -- Instance method to create visual elements
 function House:createVisuals()
     self:destroyVisuals()
-    
-    self.marker = createMarker(self.x, self.y, self.z + 1, "arrow", 1.5, 255, 255, 255, 150)
-    setElementDimension(self.marker, self.dimension)
-    setElementInterior(self.marker, self.interior)
-    
-    self.blip = createBlipAttachedTo(self.marker, 31, 0, 0, 0, 0, 255, 0, 9999)
-    setElementDimension(self.blip, self.dimension)
-    
-    self.colShape = createColSphere(self.x, self.y, self.z, 1.5)
-    setElementDimension(self.colShape, self.dimension)
 
-    self.textDisplay = textCreateDisplay()
+    local pickupId = self.owner and 1272 or 1273
+    self.pickup = Pickup(self.x, self.y, self.z, 3, pickupId, 1)
+    self.pickup:setDimension(0)
+    
+    self.blip = Blip.createAttachedTo(self.pickup, 31, 0, 0, 0, 0, 255, 0, 9999)
+    self.blip:setDimension(0)
+    self.blip:setVisibleDistance(200)
+    local icon = self.owner and 32 or 31
+    self.blip:setIcon(icon)
 
-    local text = self.owner == nil and "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. "Nobody" .. "\n\nPress ALT to buy the house" or "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price) .. "\nOwner: ((" .. (self.owner) .. "))\n\nPress ALT to buy the house"
+    self.colShape = ColShape.Sphere(self.x, self.y, self.z, 1.5)
+    self.colShape:setDimension(0)
 
-    self.textItem = textCreateTextItem(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
+    local interior = getInteriorByID(self.interior)
+    if interior then
+        self.interiorMarker = Marker(interior.x, interior.y, interior.z + 1, "arrow", 1.5, 255, 255, 255, 150)
+        self.interiorMarker:setDimension(self.id)
+        self.interiorMarker:setInterior(interior.interior)
+
+        self.interiorColShape = ColShape.Sphere(interior.x, interior.y, interior.z, 2.0)
+        self.interiorColShape:setDimension(self.id)
+        self.interiorColShape:setInterior(interior.interior)
+        
+    end
+
+    self.textDisplay = TextDisplay.create()
+
+    local ownerDisplay = self.ownerName or "Nobody"
+    local text = "House ID: " .. (self.id) .. "\nPrice: $" .. (self.price or 0) .. "\nOwner: " .. ownerDisplay .. "\n\nPress ALT to buy the house"
+
+    self.textItem = TextItem.create(text, 0.5, 0.5, "medium", 0, 255, 0, 150, 2, "left", "left", 255)
     textDisplayAddText(self.textDisplay, self.textItem)
+
+
+    addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.interiorColShape, function(hitElement)
+        if getElementType(hitElement) == "player" then
+            bindKey(hitElement, "enter", "up", function()
+                self:onPlayerExit(Character.getFromPlayer(hitElement))
+            end)
+        end
+    end)
+
+    addEventHandler(EVENTS.ON_COLSHAPE_LEAVE, self.interiorColShape, function(leaveElement)
+        if getElementType(leaveElement) == "player" then
+            unbindKey(leaveElement, "enter", "up")
+        end
+    end)
 
     addEventHandler(EVENTS.ON_COLSHAPE_HIT, self.colShape, function(hitElement)
         if getElementType(hitElement) == "player" then
             textDisplayAddObserver(self.textDisplay, hitElement)
             bindKey(hitElement, "lalt", "down", function()
+                textDisplayRemoveObserver(self.textDisplay, hitElement)
                 buyHouseFunction(hitElement, self)
+                textDisplayAddObserver(self.textDisplay, hitElement)
+            end)
+            bindKey(hitElement, "enter", "up", function()
+                self:onPlayerEnter(Character.getFromPlayer(hitElement))
             end)
         end
     end)
@@ -163,17 +213,16 @@ function House:createVisuals()
         if getElementType(leaveElement) == "player" then
             textDisplayRemoveObserver(self.textDisplay, leaveElement)
             unbindKey(leaveElement, "lalt", "down")
+            unbindKey(leaveElement, "enter", "up")
         end
     end)
-    
-    outputDebugString("[DEBUG] House visuals created for ID: " .. self.id)
 end
 
 -- Instance method to destroy visual elements
 function House:destroyVisuals()
-    if self.marker and isElement(self.marker) then
-        destroyElement(self.marker)
-        self.marker = nil
+    if self.pickup and isElement(self.pickup) then
+        destroyElement(self.pickup)
+        self.pickup = nil
     end
     
     if self.blip and isElement(self.blip) then
@@ -188,22 +237,51 @@ function House:destroyVisuals()
 end
 
 function House:setOwner(character)
-    self.owner = character.id
-    self:save()
-
-    character.setBankMoney(character:getMoney().bank - self.price)
     
+    character:takeBankMoney(self.price)
+    
+    self.owner = character.id
+    self.ownerName = character.name  -- Set the owner name directly
+    self:save()
+    self:createVisuals()
     outputDebugString("[DEBUG] House ID " .. self.id .. " ownership set to player ID " .. character.id)
     return true
 end
 
 -- Instance method called when player enters house area
-function House:onPlayerEnter(player)
-    if self.owner then
-        outputChatBox("This house is owned. ID: " .. self.id, player)
+function House:onPlayerEnter(character)
+    if self.owner and self.owner == character.id then
+        local interior = getInteriorByID(self.interior)
+        if interior then
+            outputChatBox("Interior: " .. interior.name, character.player)
+            local player = character.player
+            setElementPosition(player, interior.x, interior.y, interior.z)
+            setElementInterior(player, interior.interior)
+            setElementDimension(player, self.id)
+        else
+            outputChatBox("Interior ID: " .. (self.interior or 0), character.player)
+        end
     else
-        outputChatBox("House for sale at (" .. self.x .. ", " .. self.y .. ", " .. self.z .. "). Price: $" .. self.price, player)
-        outputChatBox("Type /buyhouse to purchase this property.", player)
+        local priceDisplay = self.price or 0
+        outputChatBox("House for sale at (" .. self.x .. ", " .. self.y .. ", " .. self.z .. "). Price: $" .. priceDisplay, character.player)
+    end
+end
+
+function House:onPlayerExit(character)
+    if self.owner and self.owner == character.id then
+        local interior = getInteriorByID(self.interior)
+        if interior then
+            outputChatBox("Interior: " .. interior.name, character.player)
+            local player = character.player
+            setElementPosition(player, self.x, self.y, self.z)
+            setElementInterior(player, 0)
+            setElementDimension(player, 0)
+        else
+            outputChatBox("Interior ID: " .. (self.interior or 0), character.player)
+        end
+    else
+        local priceDisplay = self.price or 0
+        outputChatBox("House for sale at (" .. self.x .. ", " .. self.y .. ", " .. self.z .. "). Price: $" .. priceDisplay, character.player)
     end
 end
 
@@ -223,20 +301,22 @@ function House:sellTo(player, callback)
     end
     
     -- Take money from character
-    character:takeMoney(self.price)
+    character:takeCash(self.price)
     
     -- Set owner
     self.owner = character.id
+    self.ownerName = character.name  -- Set the owner name directly
     
     -- Save house
     self:save(function(success)
         if success then
             outputChatBox("Congratulations! You bought the house for $" .. self.price, player)
             character:save() -- Save character money
+            self:createVisuals() -- Recreate visuals with new owner name
             if callback then callback(true) end
         else
             -- Refund money if save failed
-            character:addMoney(self.price)
+            character:giveCash(self.price)
             outputChatBox("Failed to purchase house. Money refunded.", player)
             if callback then callback(false) end
         end
@@ -253,6 +333,7 @@ function House:getData()
     return {
         id = self.id,
         owner = self.owner,
+        ownerName = self.ownerName,
         x = self.x,
         y = self.y,
         z = self.z,
