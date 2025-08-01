@@ -155,7 +155,7 @@ function House:createVisuals()
             textDisplayAddObserver(self.textDisplay, hitElement)
             if(self.owned) then
                 bindKey(hitElement, "enter", "down", function()
-                    buyHouseFunction(hitElement, self)
+                    self:onPlayerEnter(hitElement)
                 end)
             else
                 bindKey(hitElement, "lalt", "down", function()
@@ -169,6 +169,7 @@ function House:createVisuals()
         if getElementType(leaveElement) == "player" then
             textDisplayRemoveObserver(self.textDisplay, leaveElement)
             unbindKey(leaveElement, "lalt", "down")
+            unbindKey(leaveElement, "enter", "down")
         end
     end)
     
