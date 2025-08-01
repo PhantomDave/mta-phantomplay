@@ -1,6 +1,3 @@
--- House class using MTA OOP system
--- Based on https://wiki.multitheftauto.com/wiki/OOP_Introduction
-
 House = {}
 House.__index = House
 
