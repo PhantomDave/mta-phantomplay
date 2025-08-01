@@ -21,5 +21,6 @@
         "sumneko",
         "tonumber",
         "tostring"
-    ]
+    ],
+    "gitdoc.enabled": false
 }
