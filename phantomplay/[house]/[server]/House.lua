@@ -30,7 +30,7 @@ end
 
 -- Static method to initialize database
 function House.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES characters(id), x FLOAT, y FLOAT, z FLOAT, price INT)", function(result)
+    queryAsync("CREATE TABLE IF NOT EXISTS houses (id INT AUTO_INCREMENT PRIMARY KEY, owner INT, FOREIGN KEY (owner) REFERENCES characters(id), x FLOAT, y FLOAT, z FLOAT, price INT, interior INT)", function(result)
         if result then
             outputDebugString("[DEBUG] House table creation query successful.")
             House.LoadAllHouses()
