@@ -33,10 +33,18 @@
 	<script src="[dealership]/[server]/**/*.lua" type="server" />
 	<script src="[dealership]/[client]/**/*.lua" type="client" />
 
-	<!-- Dealerships System -->
+	<!-- Vehicles System -->
 	<script src="[servervehicles]/[server]/**/*.lua" type="server" />
+	<script src="[playervehicles]/[server]/**/*.lua" type="server" />
+
 	<!-- UI System -->
 	<script src="[ui]/[client]/**/*.lua" type="client" />
+
+	<!-- Chat System -->
+	<script src="[chat]/[server]/**/*.lua" type="server" />
+	<script src="[chat]/[client]/**/*.lua" type="client" />
+	<script src="[chat]/[shared]/**/*.lua" type="shared" />
+	
 
 	<settings>
 		<!-- MySQL Configuration -->

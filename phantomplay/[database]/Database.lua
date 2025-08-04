@@ -116,9 +116,10 @@ function Database.executeAsync(queryStr, callback, ...)
     
     local params = {...}
     dbQuery(function(qh)
-        local _, numRows, errorMsg = dbPoll(qh, -1)
-        if errorMsg then
-            outputDebugString("[ERROR] Execute failed: " .. tostring(errorMsg) .. " | Query: " .. queryStr)
+        local result, numRows, errorMsg = dbPoll(qh, -1)
+        if not result then
+            local actualErrorMsg = errorMsg or numRows or "Unknown error"
+            outputDebugString("[ERROR] Execute failed: " .. tostring(actualErrorMsg) .. " | Query: " .. queryStr)
             if callback then callback(0) end
         else
             if callback then callback(numRows or 0) end

@@ -32,7 +32,7 @@ function onDealershipVehicleSelected(dealershipId, selectedVehicleId)
                isEngineOn = false
            }
            
-           local vehicle = ServerVehicle:new(vehicleData)
+           local vehicle = PlayerVehicle:new(vehicleData)
            vehicle:insert(function(success)
                if success then
                    outputDebugString("[DEBUG] Vehicle purchased successfully: " .. tostring(vehicleData.alias))

@@ -15,8 +15,11 @@
         "Firstname",
         "formulahendry",
         "gamemodes",
+        "getmetatable",
+        "gmatch",
         "guieditor",
         "ipairs",
+        "iprint",
         "lalt",
         "Lastname",
         "mtasa",
@@ -30,7 +33,8 @@
         "subtixx",
         "sumneko",
         "tonumber",
-        "tostring"
+        "tostring",
+        "VARCHAR"
     ],
     "gitdoc.enabled": true
 }

@@ -3,7 +3,18 @@ DealershipVehicle.__index = DealershipVehicle
 
 
 function DealershipVehicle:initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS dealership_vehicles (id INT AUTO_INCREMENT PRIMARY KEY, dealership_id INT NOT NULL, FOREIGN KEY (dealership_id) REFERENCES dealerships(id), model INT NOT NULL, x FLOAT NOT NULL, y FLOAT NOT NULL, z FLOAT NOT NULL, a FLOAT NOT NULL, price INT NOT NULL)", function(result)
+    local createTableQuery = "CREATE TABLE IF NOT EXISTS dealership_vehicles (" ..
+        "id INT AUTO_INCREMENT PRIMARY KEY, " ..
+        "dealership_id INT NOT NULL, " ..
+        "FOREIGN KEY (dealership_id) REFERENCES dealerships(id), " ..
+        "model INT NOT NULL, " ..
+        "x FLOAT NOT NULL, " ..
+        "y FLOAT NOT NULL, " ..
+        "z FLOAT NOT NULL, " ..
+        "a FLOAT NOT NULL, " ..
+        "price INT NOT NULL)"
+    
+    queryAsync(createTableQuery, function(result)
         if result then
             outputDebugString("[DEBUG] Dealership vehicle table creation query successful.")
         else

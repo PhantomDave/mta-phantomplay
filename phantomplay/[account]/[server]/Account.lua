@@ -28,7 +28,15 @@ end
 
 -- Static method to initialize database
 function Account.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS accounts (id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), admin_level INT DEFAULT 0, last_login DATETIME DEFAULT current_timestamp())", function(result)
+    local createTableQuery = "CREATE TABLE IF NOT EXISTS accounts (" ..
+        "id INT AUTO_INCREMENT PRIMARY KEY, " ..
+        "email VARCHAR(255), " ..
+        "username VARCHAR(255), " ..
+        "password VARCHAR(255), " ..
+        "admin_level INT DEFAULT 0, " ..
+        "last_login DATETIME DEFAULT current_timestamp())"
+    
+    queryAsync(createTableQuery, function(result)
         if result then
             triggerEvent(EVENTS.ACCOUNTS.ON_ACCOUNT_DATABASE_CONNECTED, resourceRoot)
         else
@@ -107,9 +115,8 @@ function Account:save(callback)
     end, self.email, self.username, self.password, self.adminLevel, self.lastLogin, self.id)
 end
 
--- Instance method to update last login
 function Account:updateLastLogin(callback)
-    self.lastLogin = os.date("%Y-%m-%d %H:%M:%S", getRealTime().timestamp)
+    self.lastLogin = getTimestamp();
     self:save(callback)
 end
 

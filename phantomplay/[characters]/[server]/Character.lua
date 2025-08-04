@@ -27,7 +27,18 @@ end
 
 -- Static method to initialize database
 function Character.initializeDatabase()
-    queryAsync("CREATE TABLE IF NOT EXISTS characters (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT, gender VARCHAR(16), skin VARCHAR(16), cash INT(11), bank INT(11), account_id INT, FOREIGN KEY (account_id) REFERENCES accounts(id))", function(result)
+    local createTableQuery = "CREATE TABLE IF NOT EXISTS characters (" ..
+        "id INT AUTO_INCREMENT PRIMARY KEY, " ..
+        "name VARCHAR(255), " ..
+        "age INT, " ..
+        "gender VARCHAR(16), " ..
+        "skin VARCHAR(16), " ..
+        "cash INT(11), " ..
+        "bank INT(11), " ..
+        "account_id INT, " ..
+        "FOREIGN KEY (account_id) REFERENCES accounts(id))"
+    
+    queryAsync(createTableQuery, function(result)
         if result then
             triggerEvent(EVENTS.CHARACTERS.ON_CHARACTER_DATABASE_CONNECTED, resourceRoot)
         else

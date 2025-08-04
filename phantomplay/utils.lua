@@ -196,3 +196,7 @@ end
 function isTableNotEmpty(t)
 	return type(t) == "table" and next(t) ~= nil
 end
+
+function getTimestamp()
+    return os.date("%Y-%m-%d %H:%M:%S", getRealTime().timestamp)
+end
