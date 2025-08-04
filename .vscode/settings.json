@@ -3,6 +3,7 @@
         "autoconfig",
         "buyhouse",
         "COLSHAPE",
+        "commandname",
         "dbhost",
         "dbname",
         "dbpassword",
@@ -34,7 +35,9 @@
         "sumneko",
         "tonumber",
         "tostring",
-        "VARCHAR"
+        "VARCHAR",
+        "vmenu",
+        "Vmenu"
     ],
     "gitdoc.enabled": true
 }

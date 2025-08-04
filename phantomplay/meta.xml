@@ -36,6 +36,7 @@
 	<!-- Vehicles System -->
 	<script src="[servervehicles]/[server]/**/*.lua" type="server" />
 	<script src="[playervehicles]/[server]/**/*.lua" type="server" />
+	<script src="[playervehicles]/[client]/**/*.lua" type="client" />
 
 	<!-- UI System -->
 	<script src="[ui]/[client]/**/*.lua" type="client" />

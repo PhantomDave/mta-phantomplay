@@ -176,7 +176,11 @@ function PlayerVehicle.getAll(callback)
     Database.queryAsync(query, function(result, numRows)
         if result then
             outputDebugString("[DEBUG] Retrieved " .. tostring(numRows or 0) .. " player vehicles from database")
-            if callback then callback(result) end
+            local vehicles = {}
+            for _, vehicleData in ipairs(result) do
+                table.insert(vehicles, PlayerVehicle:new(vehicleData))
+            end
+            if callback then callback(vehicles) end
         else
             outputDebugString("[ERROR] Failed to retrieve player vehicles from database")
             if callback then callback({}) end
@@ -191,7 +195,11 @@ function PlayerVehicle.getAllByOwner(ownerId, callback)
     Database.queryAsync(query, function(result, numRows)
         if result then
             outputDebugString("[DEBUG] Found " .. tostring(numRows or 0) .. " player vehicles for owner ID: " .. tostring(ownerId))
-            if callback then callback(result) end
+            local vehicles = {}
+            for _, vehicleData in ipairs(result) do
+                table.insert(vehicles, PlayerVehicle:new(vehicleData))
+            end
+            if callback then callback(vehicles) end
         else
             outputDebugString("[ERROR] Failed to retrieve player vehicles for owner ID: " .. tostring(ownerId))
             if callback then callback({}) end

@@ -25,6 +25,7 @@ EVENTS = {
         ON_VEHICLE_SELECTED = "onVehicleSelected",
         ON_VEHICLE_PURCHASED = "onVehiclePurchased",
         ON_VEHICLE_SOLD = "onVehicleSold",
+        ON_VEHICLE_MENU_OPENED = "onVehicleMenuOpened",
     },
     GUI = {
         ON_GUI_CLICK = "onClientGUIClick",

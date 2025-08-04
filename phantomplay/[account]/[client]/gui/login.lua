@@ -63,7 +63,6 @@ end
 addEventHandler("onClientResourceStart", getResourceRootElement(), 
 	function ()
 		createLoginWindow()
-        outputChatBox("Welcome to My MTA:SA Server, please log in.")
 	    if (wdwLogin ~= nil) then
 			guiSetVisible(wdwLogin, true)
 		else

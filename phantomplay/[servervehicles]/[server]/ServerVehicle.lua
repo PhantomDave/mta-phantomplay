@@ -61,8 +61,8 @@ function ServerVehicle:insert(callback)
     self.color2 or "255,255,255",
     self.fuelType or "petrol",
     self.fuelLevel or 100,
-    self.isLocked or false,
-    self.isEngineOn or false,
+    (self.isLocked or false) and 1 or 0,
+    (self.isEngineOn or false) and 1 or 0,
     self.model or 400,
     self.alias or "",
     self.health or 1000)
@@ -113,8 +113,7 @@ function ServerVehicle:update(callback)
         "WHERE id = ?"
     
     Database.executeAsync(query, function(affectedRows)
-        outputDebugString("[DEBUG] Update query affected " .. tostring(affectedRows) .. " rows")
-        if affectedRows > 0 then
+        if affectedRows >= 0 then
             if callback then callback(true) end
         else
             outputDebugString("[ERROR] Failed to update vehicle or vehicle not found (ID: " .. 
@@ -128,8 +127,8 @@ function ServerVehicle:update(callback)
     self.color2,
     self.fuelType,
     self.fuelLevel,
-    self.isLocked,
-    self.isEngineOn,
+    self.isLocked and 1 or 0,
+    self.isEngineOn and 1 or 0,
     self.model,
     self.alias,
     self.health,
@@ -255,18 +254,13 @@ function ServerVehicle:attachEventHandlers()
     end)
 
     addEventHandler("onVehicleExit", self.vehicle, function(player, seat, jacked)
-        if seat ~= 0 then return end
         self.vehicle:setEngineState(self.isEngineOn)
         unbindKey(player, "k", "up")
         unbindKey(player, "2", "up")
         unbindKey(player, "l", "up")
-    end)
-
-
-    addEventHandler("onVehicleExit", self.vehicle, function(player, seat, jacked)
-        if seat ~= 0 then return end
-        self.vehicle:setEngineState(self.isEngineOn)
-        self:update()
+        if self.getType() == "server" then
+            self:update()
+        end
     end)
 end
 

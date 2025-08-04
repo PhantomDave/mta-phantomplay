@@ -122,7 +122,7 @@ function Database.executeAsync(queryStr, callback, ...)
             outputDebugString("[ERROR] Execute failed: " .. tostring(actualErrorMsg) .. " | Query: " .. queryStr)
             if callback then callback(0) end
         else
-            if callback then callback(numRows or 0) end
+            if callback then callback(numRows or 1) end
         end
         dbFree(qh)
     end, {}, Database.connection, queryStr, unpack(params))
