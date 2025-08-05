@@ -26,9 +26,12 @@ EVENTS = {
         ON_VEHICLE_PURCHASED = "onVehiclePurchased",
         ON_VEHICLE_SOLD = "onVehicleSold",
         ON_VEHICLE_MENU_OPENED = "onVehicleMenuOpened",
+        ON_VEHICLE_ACTIONS_MENU_OPENED = "onVehicleActionsMenuOpened",
     },
     GUI = {
         ON_GUI_CLICK = "onClientGUIClick",
+        ON_GUI_DOUBLE_CLICK = "onClientGUIDoubleClick",
+        ON_GUI_KEY_DOWN = "onClientGUIKeyDown",
         CLEAR_LOGIN_WINDOW = "clearLoginWindow",
         CLEAR_CHARACTER_SELECTION_WINDOW = "clearCharacterSelectionWindow",
         CLEAR_VEHICLE_SELECTION_WINDOW = "clearVehicleSelectionWindow",

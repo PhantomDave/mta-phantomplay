@@ -1,7 +1,18 @@
 PlayerVehicle = setmetatable({}, {__index = ServerVehicle})
 PlayerVehicle.__index = PlayerVehicle
 
+-- Static registry to keep track of existing instances
+PlayerVehicle.instances = {}
+
 function PlayerVehicle:new(vehicleData)
+    -- Check if instance already exists for this vehicle ID
+    if vehicleData.id and PlayerVehicle.instances[vehicleData.id] then
+        local existingInstance = PlayerVehicle.instances[vehicleData.id]
+        -- Update existing instance with new data if needed
+        existingInstance:updateFromData(vehicleData)
+        return existingInstance
+    end
+    
     local mappedData = {
         id = vehicleData.id,
         model = vehicleData.model,
@@ -48,7 +59,54 @@ function PlayerVehicle:new(vehicleData)
     instance.isImpounded = vehicleData.isImpounded or false
     instance.insuranceExpiry = vehicleData.insuranceExpiry or 0
     instance.vehicle:setData("playerVehicle", instance)
+    
+    -- Store in static registry
+    if instance.id then
+        PlayerVehicle.instances[instance.id] = instance
+    end
+    
     return instance
+end
+
+-- Method to update existing instance with new data
+function PlayerVehicle:updateFromData(vehicleData)
+    -- Update player-specific properties
+    self.lastUsed = vehicleData.lastUsed or self.lastUsed
+    self.mileage = vehicleData.mileage or self.mileage
+    self.insurance = vehicleData.insurance or self.insurance
+    
+    -- Handle modifications
+    if type(vehicleData.modifications) == "string" and vehicleData.modifications ~= "" then
+        self.modifications = {}
+        for mod in vehicleData.modifications:gmatch("[^,]+") do
+            table.insert(self.modifications, mod)
+        end
+    end
+    
+    -- Update location data
+    self.lastLocationX = vehicleData.lastLocationX or self.lastLocationX
+    self.lastLocationY = vehicleData.lastLocationY or self.lastLocationY
+    self.lastLocationZ = vehicleData.lastLocationZ or self.lastLocationZ
+    self.lastLocationRx = vehicleData.lastLocationRx or self.lastLocationRx
+    self.lastLocationRy = vehicleData.lastLocationRy or self.lastLocationRy
+    self.lastLocationRz = vehicleData.lastLocationRz or self.lastLocationRz
+    self.isImpounded = vehicleData.isImpounded or self.isImpounded
+    self.insuranceExpiry = vehicleData.insuranceExpiry or self.insuranceExpiry
+end
+
+-- Clean up instance from registry when vehicle is destroyed
+function PlayerVehicle:destroy()
+    if self.id and PlayerVehicle.instances[self.id] then
+        PlayerVehicle.instances[self.id] = nil
+    end
+    
+    -- Call parent destroy method if it exists
+    if ServerVehicle.destroy then
+        ServerVehicle.destroy(self)
+    elseif self.vehicle and isElement(self.vehicle) then
+        self.vehicle:destroy()
+        self.vehicle = nil
+    end
 end
 
 function PlayerVehicle.initializeDatabase()
@@ -209,12 +267,20 @@ end
 
 -- Static method to get a player vehicle by ID
 function PlayerVehicle.getById(vehicleId, callback)
+    -- First check if instance already exists in memory
+    if PlayerVehicle.instances[vehicleId] then
+        if callback then callback(PlayerVehicle.instances[vehicleId]) end
+        return
+    end
+    
+    -- If not in memory, query database and create/return instance
     local query = "SELECT v.*, pve.lastUsed, pve.mileage, pve.insurance, pve.modifications, pve.lastLocationX, pve.lastLocationY, pve.lastLocationZ, pve.lastLocationRx, pve.lastLocationRy, pve.lastLocationRz, pve.isImpounded, pve.insuranceExpiry FROM vehicles v INNER JOIN player_vehicle pve ON v.id = pve.vehicle_id WHERE v.id = ?"
     
     Database.queryAsync(query, function(result)
         if result and #result > 0 then
             outputDebugString("[DEBUG] Player vehicle found (ID: " .. tostring(vehicleId) .. ")")
-            if callback then callback(result[1]) end
+            local instance = PlayerVehicle:new(result[1])
+            if callback then callback(instance) end
         else
             outputDebugString("[DEBUG] Player vehicle not found (ID: " .. tostring(vehicleId) .. ")")
             if callback then callback(nil) end
@@ -230,17 +296,43 @@ function PlayerVehicle.getFromVehicle(vehicle)
 
     local playerVehicle = vehicle:getData("playerVehicle")
     if playerVehicle then
+        -- Ensure proper metatable is set
         setmetatable(playerVehicle, PlayerVehicle)
+        
+        -- Ensure it's also in our static registry
+        if playerVehicle.id and not PlayerVehicle.instances[playerVehicle.id] then
+            PlayerVehicle.instances[playerVehicle.id] = playerVehicle
+        end
+        
+        return playerVehicle
     end
-    return playerVehicle
+    return nil
 end
 
 function PlayerVehicle.createFromData(vehicleData)
     return PlayerVehicle:new(vehicleData)
 end
 
+-- Static method to get existing instance or create new one
+function PlayerVehicle.getOrCreate(vehicleId, callback)
+    -- First check if instance already exists
+    if PlayerVehicle.instances[vehicleId] then
+        if callback then callback(PlayerVehicle.instances[vehicleId]) end
+        return PlayerVehicle.instances[vehicleId]
+    end
+    
+    -- If not, get from database which will create the instance
+    PlayerVehicle.getById(vehicleId, callback)
+    return nil -- Will be provided via callback
+end
+
 -- Static method to delete a player vehicle
 function PlayerVehicle.delete(vehicleId, callback)
+    -- Remove from static registry
+    if PlayerVehicle.instances[vehicleId] then
+        PlayerVehicle.instances[vehicleId] = nil
+    end
+    
     -- Delete from extensions table first (due to foreign key constraint)
     local extensionQuery = "DELETE FROM player_vehicle WHERE vehicle_id = ?"
     
@@ -319,6 +411,7 @@ function PlayerVehicle:impound()
         self.vehicle:destroy()
         self.vehicle = nil
     end
+    -- Note: Don't remove from registry as the instance still exists, just impounded
 end
 
 -- Release from impound

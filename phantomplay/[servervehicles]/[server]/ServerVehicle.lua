@@ -166,6 +166,20 @@ function ServerVehicle.getAllByOwner(ownerId, callback)
     end, ownerId)
 end
 
+function ServerVehicle.getFromVehicle(vehicle)
+    if not vehicle or not isElement(vehicle) then
+        outputDebugString("[ERROR] Invalid vehicle element provided")
+        return nil
+    end
+
+    local serverVehicle = vehicle:getData("serverVehicle")
+    if serverVehicle then
+        return serverVehicle
+    else
+        return nil
+    end
+end
+
 function ServerVehicle.getAll(callback)
     local query = "SELECT * FROM vehicles WHERE owner IS NULL"
 
@@ -297,20 +311,23 @@ function ServerVehicle:new(vehicleData)
         true or false
     instance.isEngineOn = (vehicleData.isEngineOn == 1 or vehicleData.isEngineOn == true) and 
         true or false
-    instance.vehicle = Vehicle(vehicleData.model, instance.position.x, 
+
+    if instance.vehicle == nil then
+        instance.vehicle = Vehicle(vehicleData.model, instance.position.x, 
         instance.position.y, instance.position.z)
-    local color1 = StringUtils.split(instance.color, ",")
-    local color2 = StringUtils.split(instance.color2, ",")
-    instance.vehicle:setColor(tonumber(color1[1]), tonumber(color1[2]), tonumber(color1[3]),
+        local color1 = StringUtils.split(instance.color, ",")
+        local color2 = StringUtils.split(instance.color2, ",")
+        instance.vehicle:setColor(tonumber(color1[1]), tonumber(color1[2]), tonumber(color1[3]),
         tonumber(color2[1]), tonumber(color2[2]), tonumber(color2[3]))
-    instance.vehicle:setPlateText(instance.plate)
-    instance.vehicle:setHealth(instance.health)
-    instance.vehicle:setEngineState(instance.isEngineOn)
-    instance.vehicle:setLocked(instance.isLocked)
-    instance.vehicle:spawn(instance.position.x, instance.position.y, instance.position.z, 
+        instance.vehicle:setPlateText(instance.plate)
+        instance.vehicle:setHealth(instance.health)
+        instance.vehicle:setEngineState(instance.isEngineOn)
+        instance.vehicle:setLocked(instance.isLocked)
+        instance.vehicle:spawn(instance.position.x, instance.position.y, instance.position.z, 
         instance.rotation.x, instance.rotation.y, instance.rotation.z)
-    instance:attachEventHandlers()
-    instance.vehicle:setData("serverVehicle", instance)
+        instance:attachEventHandlers()
+        instance.vehicle:setData("serverVehicle", instance)
+    end
     return instance
 end
 

@@ -17,6 +17,7 @@ function createCharacterSelectionWindow()
 
     addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnCreate, OnCreateCharacter, false)
     addEventHandler(EVENTS.GUI.ON_GUI_CLICK, btnSelect, OnSelectCharacter, false)
+    addEventHandler(EVENTS.GUI.ON_GUI_DOUBLE_CLICK, gridListCharacters, OnSelectCharacter, false)
 end
 
 function OnCreateCharacter(button, state)

@@ -16,6 +16,7 @@ function openVehicleMenu(player, commandname)
             veh.name = vehicle.alias
             veh.distance = math.floor(getDistanceBetweenPoints3D(player:getPosition(), vehicle.vehicle:getPosition()))
             veh.id = vehicle.id
+            veh.vehicle = vehicle.vehicle
             table.insert(vmenuItems, veh)
         end
         triggerClientEvent(player, EVENTS.VEHICLES.ON_VEHICLE_MENU_OPENED, player, vmenuItems)

@@ -2,6 +2,7 @@
 
 ## General Guidelines
 - Use Lua best practices for MTA:SA scripting.
+- Use the OOP methods instead of the standard ones
 - Follow the existing project structure and naming conventions.
 - Prioritize code readability and maintainability.
 - Use comments to explain non-obvious logic, especially in event handlers and database interactions.
