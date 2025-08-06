@@ -239,31 +239,16 @@ function ServerVehicle:attachEventHandlers()
                 outputChatBox("You do not own this vehicle.", player)
                 return
             end
-            self.isEngineOn = not self.isEngineOn
-            self.vehicle:setEngineState(self.isEngineOn)
-            outputChatBox("Engine " .. (self.isEngineOn and "started" or "stopped"), player)
+            self:toggleEngine(player);
         end)
 
         bindKey(player, "l", "up", function()
-            local character = Character.getFromPlayer(player)
-            
-            if not character then return end
-
-            if(self.owner ~= character.id) then
-                outputChatBox("You do not own this vehicle.", player)
-                return
-            end
-            self.isLocked = not self.isLocked
-            self.vehicle:setLocked(self.isLocked)
-            outputChatBox("Vehicle " .. (self.isLocked and "locked" or "unlocked"), player)
+            self:toggleLock(player)
         end)
 
         bindKey(player, "2", "up", function()
-            local character = Character.getFromPlayer(player)
-            
-            if not character then return end
-            self.lights = self.lights == 1 and 2 or 1
-            self.vehicle:setOverrideLights(self.lights)
+            self:toggleLights()
+
         end)
     end)
 
@@ -276,6 +261,54 @@ function ServerVehicle:attachEventHandlers()
             self:update()
         end
     end)
+end
+
+function ServerVehicle:toggleEngine(player)
+    if not isElement(self.vehicle) then
+        outputChatBox("Vehicle does not exist.", player)
+        return
+    end
+
+    self.isEngineOn = not self.isEngineOn
+    self.vehicle:setEngineState(self.isEngineOn)
+
+    if self.getType() == "server" then
+        self:update()
+    end
+
+    outputChatBox("Vehicle engine " .. (self.isEngineOn and "started" or "stopped"), player)
+end
+
+function ServerVehicle:toggleLights()
+    if not isElement(self.vehicle) then
+        outputChatBox("Vehicle does not exist.", player)
+        return
+    end
+
+    self.lights = self.lights == 1 and 2 or 1
+    self.vehicle:setOverrideLights(self.lights)
+
+    if self.getType() == "server" then
+        self:update()
+    end
+
+    outputChatBox("Vehicle lights " .. (self.lights == 1 and "turned on" or "turned off"), player)
+end
+
+function ServerVehicle:toggleLock(player)
+    if not isElement(self.vehicle) then
+        outputChatBox("Vehicle does not exist.", player)
+        return
+    end
+
+    self.isLocked = not self.isLocked
+    self.vehicle:setLocked(self.isLocked)
+
+    if self.getType() == "server" then
+        self:update()
+    end
+
+    outputChatBox("Vehicle " .. (self.isLocked and "locked" or "unlocked"), player)
 end
 
 function ServerVehicle:getType()

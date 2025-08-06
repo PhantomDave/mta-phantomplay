@@ -38,6 +38,11 @@
 	<script src="[playervehicles]/[server]/**/*.lua" type="server" />
 	<script src="[playervehicles]/[client]/**/*.lua" type="client" />
 
+	<!-- Inventory System -->
+	<script src="[inventory]/[shared]/**/*.lua" type="shared" />
+	<script src="[inventory]/[server]/**/*.lua" type="server" />
+	<script src="[inventory]/[client]/**/*.lua" type="client" />
+
 	<!-- UI System -->
 	<script src="[ui]/[client]/**/*.lua" type="client" />
 

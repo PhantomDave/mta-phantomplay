@@ -13,10 +13,7 @@ local vehicleActions = {
     {name = "Lock/Unlock Vehicle", action = "lock", icon = "🔒"},
     {name = "Sound Horn", action = "horn", icon = "📯"},
     {name = "Toggle Siren", action = "siren", icon = "🚨"},
-    {name = "Repair Vehicle", action = "repair", icon = "🔨"},
-    {name = "Flip Vehicle", action = "flip", icon = "🔄"},
-    {name = "Refuel Vehicle", action = "refuel", icon = "⛽"},
-    {name = "Wash Vehicle", action = "wash", icon = "🧽"}
+    {name = "Refuel Vehicle", action = "refuel", icon = "⛽"}
 }
 
 function createVehicleActionsMenu()
@@ -189,9 +186,7 @@ function performVehicleAction(action, actionName)
         outputChatBox("Vehicle trunk " .. (isOpen and "closed" or "opened"), 0, 255, 0)
         
     elseif action == "engine" then
-        local engineState = getVehicleEngineState(vehicle)
-        setVehicleEngineState(vehicle, not engineState)
-        outputChatBox("Vehicle engine " .. (engineState and "turned off" or "turned on"), 0, 255, 0)
+        triggerServerEvent(EVENTS.VEHICLES.ON_PLAYER_TOGGLE_ENGINE, localPlayer, vehicle)
         
     elseif action == "lights" then
         local currentLights = getVehicleOverrideLights(vehicle)
@@ -199,9 +194,7 @@ function performVehicleAction(action, actionName)
         outputChatBox("Vehicle lights " .. (currentLights == 2 and "turned off" or "turned on"), 0, 255, 0)
         
     elseif action == "lock" then
-        local isLocked = isVehicleLocked(vehicle)
-        setVehicleLocked(vehicle, not isLocked)
-        outputChatBox("Vehicle " .. (isLocked and "unlocked" or "locked"), 0, 255, 0)
+        triggerServerEvent(EVENTS.VEHICLES.ON_PLAYER_TOGGLE_LOCK, localPlayer, vehicle)
         
     elseif action == "horn" then
         -- Trigger horn sound (you might need to use server events for this)
@@ -213,28 +206,11 @@ function performVehicleAction(action, actionName)
         setVehicleSirensOn(vehicle, not sirenState)
         outputChatBox("Vehicle siren " .. (sirenState and "turned off" or "turned on"), 0, 255, 0)
         
-    elseif action == "repair" then
-        fixVehicle(vehicle)
-        outputChatBox("Vehicle repaired!", 0, 255, 0)
-        
-    elseif action == "flip" then
-        local x, y, z = getElementPosition(vehicle)
-        setElementPosition(vehicle, x, y, z + 2)
-        setElementRotation(vehicle, 0, 0, getElementRotation(vehicle))
-        outputChatBox("Vehicle flipped!", 0, 255, 0)
-        
     elseif action == "refuel" then
         -- This would typically be handled server-side
         outputChatBox("Refueling vehicle... (Feature needs server implementation)", 255, 255, 0)
         -- triggerServerEvent("onPlayerRefuelVehicle", localPlayer, vehicle)
-        
-    elseif action == "wash" then
-        -- This would typically be handled server-side
-        outputChatBox("Washing vehicle... (Feature needs server implementation)", 255, 255, 0)
-        -- triggerServerEvent("onPlayerWashVehicle", localPlayer, vehicle)
-    end
     
-    -- Refresh the action list to update statuses
     setTimer(populateVehicleActions, 500, 1)
 end
 
@@ -266,11 +242,6 @@ function closeVehicleActionsMenu()
     end
 end
 
--- Event handlers for opening the actions menu
-addEvent(EVENTS.VEHICLES.ON_VEHICLE_ACTIONS_MENU_OPENED, true)
-addEventHandler(EVENTS.VEHICLES.ON_VEHICLE_ACTIONS_MENU_OPENED, root, openVehicleActionsMenu)
-
--- Initialize the menu when the script loads
 addEventHandler("onClientResourceStart", resourceRoot, function()
     createVehicleActionsMenu()
 end)

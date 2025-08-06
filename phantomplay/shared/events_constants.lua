@@ -3,6 +3,13 @@ EVENTS = {
     ON_RESOURCE_START = "onResourceStart",
     ON_COLSHAPE_HIT = "onColShapeHit",
     ON_COLSHAPE_LEAVE = "onColShapeLeave",
+    INVENTORY = {
+        ON_INVENTORY_DATABASE_CONNECTED = "onInventoryDatabaseConnected",
+        ON_INVENTORY_TOGGLED = "onInventoryToggled",
+        ON_ITEM_ADDED = "onItemAdded",
+        ON_ITEM_REMOVED = "onItemRemoved",
+        ON_ITEM_UPDATED = "onItemUpdated",
+    },
     HOUSES = {
         ON_HOUSE_DATABASE_CONNECTED = "onHouseDatabaseConnected",
     },
@@ -27,6 +34,10 @@ EVENTS = {
         ON_VEHICLE_SOLD = "onVehicleSold",
         ON_VEHICLE_MENU_OPENED = "onVehicleMenuOpened",
         ON_VEHICLE_ACTIONS_MENU_OPENED = "onVehicleActionsMenuOpened",
+        ON_PLAYER_TOGGLE_ENGINE = "onPlayerToggleEngine",
+        ON_PLAYER_TOGGLE_LOCK = "onPlayerToggleLock",
+        ON_PLAYER_USE_HORN = "onPlayerUseHorn",
+        ON_PLAYER_REFUEL_VEHICLE = "onPlayerRefuelVehicle",
     },
     GUI = {
         ON_GUI_CLICK = "onClientGUIClick",
@@ -35,5 +46,6 @@ EVENTS = {
         CLEAR_LOGIN_WINDOW = "clearLoginWindow",
         CLEAR_CHARACTER_SELECTION_WINDOW = "clearCharacterSelectionWindow",
         CLEAR_VEHICLE_SELECTION_WINDOW = "clearVehicleSelectionWindow",
+        ON_INVENTORY_TOGGLED = "onInventoryToggled",
     }
 }
