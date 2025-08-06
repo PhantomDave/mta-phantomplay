@@ -18,6 +18,73 @@ Inventory.__index = Inventory
 ---@alias SlotCallback fun(slot: number?)
 ---@alias HasItemCallback fun(hasItem: boolean, currentQuantity: number?)
 
+---Helper function to create proper item instance from item name
+---@param itemName string The name of the item
+---@param dbItem table The database item record
+---@return table? itemInstance The proper item class instance or nil
+local function createItemInstance(itemName, dbItem)
+    if not itemName then
+        return nil
+    end
+    
+    -- Get item data from the item system
+    local itemTemplate = Item.GetItemFromName(itemName)
+    if not itemTemplate then
+        outputDebugString("[WARNING] Item template not found for: " .. tostring(itemName))
+        return nil
+    end
+    
+    -- Create the appropriate item instance based on category
+    local itemInstance = nil
+    
+    -- Check if it's a consumable
+    if getAllConsumables then
+        local consumables = getAllConsumables()
+        for _, consumableData in ipairs(consumables) do
+            if consumableData.name == itemName then
+                itemInstance = Consumable:new(consumableData)
+                break
+            end
+        end
+    end
+    
+    -- Check if it's a weapon
+    if not itemInstance and getAllWeapons then
+        local weapons = getAllWeapons()
+        for _, weaponData in ipairs(weapons) do
+            if weaponData.name == itemName then
+                itemInstance = Weapon:new(weaponData)
+                break
+            end
+        end
+    end
+    
+    -- Check if it's clothing
+    if not itemInstance and getAllClothing then
+        local clothing = getAllClothing()
+        for _, clothingData in ipairs(clothing) do
+            if clothingData.name == itemName then
+                itemInstance = Clothing:new(clothingData)
+                break
+            end
+        end
+    end
+    
+    -- Fall back to basic Item if no specific type found
+    if not itemInstance then
+        itemInstance = Item:new(itemTemplate)
+    end
+    
+    -- Add database-specific properties to the item instance
+    if itemInstance and dbItem then
+        itemInstance.dbID = dbItem.ID
+        itemInstance.slot = dbItem.Slot
+        itemInstance.quantity = dbItem.Quantity
+    end
+    
+    return itemInstance
+end
+
 ---Initialize the inventory database table
 ---@return boolean success True if initialization started successfully
 function Inventory.initializeDatabase()
@@ -338,8 +405,11 @@ function Inventory.getItemBySlot(characterID, slot, callback)
     
     Database.queryAsync(query, function(result)
         if result and #result > 0 then
+            local dbItem = result[1]
             outputDebugString("[DEBUG] Retrieved item from slot " .. slot .. " for character " .. characterID)
-            if callback then callback(result[1]) end
+            -- Create proper item instance instead of returning raw database record
+            local itemInstance = createItemInstance(dbItem.Item, dbItem)
+            if callback then callback(itemInstance) end
         else
             outputDebugString("[DEBUG] No item found in slot " .. slot .. " for character " .. characterID)
             if callback then callback(nil) end

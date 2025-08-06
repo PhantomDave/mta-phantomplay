@@ -200,3 +200,32 @@ end
 function getTimestamp()
     return os.date("%Y-%m-%d %H:%M:%S", getRealTime().timestamp)
 end
+
+function parseQuotedArguments(text)
+    local args = {}
+    local current = ""
+    local inQuotes = false
+    local i = 1
+    
+    while i <= #text do
+        local char = text:sub(i, i)
+        
+        if char == '"' and (i == 1 or text:sub(i-1, i-1) ~= '\\') then
+            inQuotes = not inQuotes
+        elseif char == ' ' and not inQuotes then
+            if current ~= "" then
+                table.insert(args, current)
+                current = ""
+            end
+        else
+            current = current .. char
+        end
+        i = i + 1
+    end
+    
+    if current ~= "" then
+        table.insert(args, current)
+    end
+    
+    return args[1], args[2], tonumber(args[3]) or 1
+end

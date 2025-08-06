@@ -1,0 +1,20 @@
+Shotgun = {
+    id = 2005,
+    name = "Shotgun",
+    description = "A close-range weapon with devastating power",
+    icon = "shotgun.png",
+    weight = 3.2,
+    value = 1500,
+    weaponType = 25, -- MTA weapon ID for Shotgun
+    damage = 80,
+    range = 25,
+    accuracy = 0.9,
+    fireRate = 2000,
+    ammoType = "12gauge",
+    maxAmmo = 6,
+    currentAmmo = 6,
+    weaponSlot = 3,
+    maxDurability = 1000,
+    durability = 1000,
+    rarity = "uncommon"
+}

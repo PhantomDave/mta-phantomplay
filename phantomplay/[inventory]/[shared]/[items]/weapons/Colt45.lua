@@ -1,0 +1,20 @@
+Colt45 = {
+    id = 2001,
+    name = "Colt 45",
+    description = "A reliable pistol with moderate damage",
+    icon = "colt45.png",
+    weight = 1.2,
+    value = 500,
+    weaponType = 22, -- MTA weapon ID for Colt 45
+    damage = 25,
+    range = 35,
+    accuracy = 0.8,
+    fireRate = 800,
+    ammoType = "9mm",
+    maxAmmo = 17,
+    currentAmmo = 17,
+    weaponSlot = 2,
+    maxDurability = 1000,
+    durability = 1000,
+    rarity = "common"
+}

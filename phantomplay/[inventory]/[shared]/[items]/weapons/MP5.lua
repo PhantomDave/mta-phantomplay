@@ -1,0 +1,22 @@
+MP5 = {
+    id = 2003,
+    name = "MP5",
+    description = "A versatile submachine gun",
+    icon = "mp5.png",
+    weight = 2.5,
+    value = 2000,
+    weaponType = 29, -- MTA weapon ID for MP5
+    damage = 20,
+    range = 45,
+    accuracy = 0.7,
+    fireRate = 150,
+    ammoType = "9mm",
+    maxAmmo = 30,
+    currentAmmo = 30,
+    weaponSlot = 4,
+    isAutomatic = true,
+    maxDurability = 1200,
+    durability = 1200,
+    requiresLicense = true,
+    rarity = "rare"
+}

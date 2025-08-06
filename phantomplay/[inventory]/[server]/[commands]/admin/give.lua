@@ -1,4 +1,6 @@
-function givePlayerItem(player, command, otherName, itemName, quantity)
+function givePlayerItem(player, command, ...)
+    local args = {...}
+    local fullCommand = table.concat(args, " ")
 
     local account = Account.getFromPlayer(player)
     
@@ -7,8 +9,17 @@ function givePlayerItem(player, command, otherName, itemName, quantity)
         return
     end
 
-    if not itemName or not quantity then
-        outputChatBox("Usage: /giveitem [playername] [itemName] [quantity]", player, 255, 0, 0)
+    if #args < 3 then
+        outputChatBox("Usage: /giveitem \"player name\" \"item name\" [quantity]", player, 255, 0, 0)
+        outputChatBox("Use quotes around names with spaces.", player, 255, 255, 0)
+        return
+    end
+
+    -- Parse arguments with quote support
+    local otherName, itemName, quantity = parseQuotedArguments(fullCommand)
+    if not otherName or not itemName then
+        outputChatBox("Usage: /giveitem \"player name\" \"item name\" [quantity]", player, 255, 0, 0)
+        outputChatBox("Use quotes around names with spaces.", player, 255, 255, 0)
         return
     end
 

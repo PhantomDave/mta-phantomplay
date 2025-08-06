@@ -1,0 +1,21 @@
+DesertEagle = {
+    id = 2002,
+    name = "Desert Eagle",
+    description = "A powerful pistol with high damage",
+    icon = "deagle.png",
+    weight = 1.8,
+    value = 1200,
+    weaponType = 24, -- MTA weapon ID for Desert Eagle
+    damage = 50,
+    range = 35,
+    accuracy = 0.9,
+    fireRate = 1200,
+    ammoType = ".50AE",
+    maxAmmo = 7,
+    currentAmmo = 7,
+    weaponSlot = 2,
+    maxDurability = 800,
+    durability = 800,
+    requiresLicense = true,
+    rarity = "uncommon"
+}

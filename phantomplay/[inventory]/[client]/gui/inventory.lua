@@ -35,8 +35,8 @@ addEvent(EVENTS.INVENTORY.ON_INVENTORY_REFRESH, true)
 addEventHandler(EVENTS.INVENTORY.ON_INVENTORY_REFRESH, root,
     function(items)
         InventoryGUI.gridList.items:clear()
-        for rowIndex = 0, 9 do
-            local item = items[rowIndex + 1] or {}
+        for rowIndex = 1, 10 do
+            local item = items[rowIndex] or {}
             iprint(item)
             local row = InventoryGUI.gridList.items:addRow()
             InventoryGUI.gridList.items:setItemText(rowIndex, 1, tostring(rowIndex) .. ")", false, false)

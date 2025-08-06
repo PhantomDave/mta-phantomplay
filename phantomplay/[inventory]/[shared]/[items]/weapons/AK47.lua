@@ -1,0 +1,22 @@
+AK47 = {
+    id = 2004,
+    name = "AK-47",
+    description = "A powerful assault rifle",
+    icon = "ak47.png",
+    weight = 3.8,
+    value = 5000,
+    weaponType = 30, -- MTA weapon ID for AK-47
+    damage = 35,
+    range = 70,
+    accuracy = 0.6,
+    fireRate = 100,
+    ammoType = "7.62mm",
+    maxAmmo = 30,
+    currentAmmo = 30,
+    weaponSlot = 5,
+    isAutomatic = true,
+    maxDurability = 1500,
+    durability = 1500,
+    requiresLicense = true,
+    rarity = "epic"
+}
