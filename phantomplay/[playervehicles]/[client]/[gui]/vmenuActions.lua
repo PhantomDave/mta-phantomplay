@@ -210,6 +210,7 @@ function performVehicleAction(action, actionName)
         -- This would typically be handled server-side
         outputChatBox("Refueling vehicle... (Feature needs server implementation)", 255, 255, 0)
         -- triggerServerEvent("onPlayerRefuelVehicle", localPlayer, vehicle)
+    end
     
     setTimer(populateVehicleActions, 500, 1)
 end

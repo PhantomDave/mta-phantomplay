@@ -11,9 +11,16 @@ local function onCharacterSelected(characterId)
             
             -- Spawn the character
             character:spawn(126.7494430542, 1105.8229980469, 14)
-            
+            player:setName(character.name)
             outputDebugString("[DEBUG] Character " .. character.name .. " selected and spawned for player " .. getPlayerName(player))
-            
+            Inventory.getPlayerInventory(player, function(inventoryItems)
+                if inventoryItems then
+                    -- Refresh inventory GUI with items
+                    triggerClientEvent(player, EVENTS.INVENTORY.ON_INVENTORY_REFRESH, player, inventoryItems)
+                else
+                    outputDebugString("[DEBUG] No inventory items found for character " .. character.name)
+                end
+            end)
             -- Clear character selection window
             triggerClientEvent(player, EVENTS.GUI.CLEAR_CHARACTER_SELECTION_WINDOW, player)
         else

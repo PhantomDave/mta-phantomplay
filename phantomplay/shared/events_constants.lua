@@ -8,7 +8,7 @@ EVENTS = {
         ON_INVENTORY_TOGGLED = "onInventoryToggled",
         ON_ITEM_ADDED = "onItemAdded",
         ON_ITEM_REMOVED = "onItemRemoved",
-        ON_ITEM_UPDATED = "onItemUpdated",
+        ON_INVENTORY_REFRESH = "onItemUpdated",
     },
     HOUSES = {
         ON_HOUSE_DATABASE_CONNECTED = "onHouseDatabaseConnected",

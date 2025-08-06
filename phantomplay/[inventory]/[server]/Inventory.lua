@@ -29,7 +29,7 @@ function Inventory.initializeDatabase()
     local createTableQuery = [[
         CREATE TABLE IF NOT EXISTS player_items (
             ID INT AUTO_INCREMENT PRIMARY KEY,
-            OwnerID INT NOT NULL,
+            OwnerID INT NOT NULL REFERENCES characters(ID) ON DELETE CASCADE,
             Item VARCHAR(100) NOT NULL,
             Quantity INT NOT NULL DEFAULT 1,
             Slot INT NOT NULL DEFAULT 1,
@@ -673,9 +673,19 @@ function Inventory.getPlayerInventory(player, callback)
 end
 
 function Inventory.updateInventoryGUI(player)
-    -- Placeholder for GUI update logic
-    -- This function should be called after any inventory change to refresh the player's inventory GUI
-    outputDebugString("[DEBUG] Inventory GUI update requested for player " .. getPlayerName(player))
+    local characterID = Inventory.getCharacterID(player)
+    if not characterID then
+        outputDebugString("[ERROR] Could not get character ID from player element")
+        return false
+    end
+
+    Inventory.getPlayerInventory(player, function(items)
+        if items then
+            triggerClientEvent(player, EVENTS.INVENTORY.ON_INVENTORY_REFRESH, player, items)
+        else
+            outputDebugString("[ERROR] Failed to retrieve inventory for GUI update")
+        end
+    end)
 end
 
 ---Check if player has item using player element

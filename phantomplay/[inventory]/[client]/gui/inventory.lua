@@ -16,7 +16,7 @@ addEventHandler("onClientResourceStart", resourceRoot,
             InventoryGUI.gridList.items:addRow()
         end
         for rowIndex = 0, 9 do
-            InventoryGUI.gridList.items:setItemText(rowIndex, 1, "-", false, false)
+            InventoryGUI.gridList.items:setItemText(rowIndex, 1, tostring(rowIndex) .. ")", false, false)
             InventoryGUI.gridList.items:setItemText(rowIndex, 2, "-", false, false)
             InventoryGUI.gridList.items:setItemText(rowIndex, 3, "-", false, false)
         end
@@ -28,5 +28,20 @@ addEvent(EVENTS.GUI.ON_INVENTORY_TOGGLED, true)
 addEventHandler(EVENTS.GUI.ON_INVENTORY_TOGGLED, root,
     function()
         InventoryGUI.window.main:setVisible(not InventoryGUI.window.main:isVisible())
+    end
+)
+
+addEvent(EVENTS.INVENTORY.ON_INVENTORY_REFRESH, true)
+addEventHandler(EVENTS.INVENTORY.ON_INVENTORY_REFRESH, root,
+    function(items)
+        InventoryGUI.gridList.items:clear()
+        for rowIndex = 0, 9 do
+            local item = items[rowIndex + 1] or {}
+            iprint(item)
+            local row = InventoryGUI.gridList.items:addRow()
+            InventoryGUI.gridList.items:setItemText(rowIndex, 1, tostring(rowIndex) .. ")", false, false)
+            InventoryGUI.gridList.items:setItemText(row, 2, tostring(item.Item or "-"), false, false)
+            InventoryGUI.gridList.items:setItemText(row, 3, tostring(item.Quantity or "-"), false, false)
+        end
     end
 )
